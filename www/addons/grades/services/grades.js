@@ -74,12 +74,11 @@ angular.module('mm.addons.grades')
         applytoall: 0,
         grades: grades
       };
-      console.log(data);
-      return $mmSite.write('mod_assign_save_grades', data).then(function() {
+      return $mmSite.write('mod_assign_save_grades', data);/*.then(function() {
         Ids.foreach(function(uniqueId) {
           return $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
         });
-      });
+      });*/
     };
 
     /**
@@ -161,19 +160,7 @@ angular.module('mm.addons.grades')
         instanceid : $mmSite.getUserId()
       };
 
-      return $mmSite.write('core_files_upload', data, function() {
-        if(itemId == -1){
-          var updateStatus = null; //mettre des valeurs correct
-          var updateGrade = -1; //mettre des valeurs correct
-          var updateComment = ""; //mettre des valeurs correct
-          $mmGrades.updateGradingInfo(courseid,
-                                      submission.userid,
-                                      updateStatus,
-                                      updateGrade,
-                                      updateComment,
-                                      submission.id);
-        }
-      });
+      return $mmSite.write('core_files_upload', data);
     };
 
     self.downloadAll = function() {

@@ -82,12 +82,10 @@ angular.module('mm.addons.grades')
                 uniqueid: data.uniqueId
               };
 
-              // data.file.forEach(function(attach) {
-              //   $mmaGrades.uploadFiles(attach, submission.id);
-              // });
+              data.file.forEach(function(attach) {
+                $mmaGrades.uploadFiles(attach, submission.id);
+              });
           });
-          console.log(grades);
-          console.log(Ids);
           $mmaGrades.addGrade(assign, grades, Ids);
       });
     };

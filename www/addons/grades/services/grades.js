@@ -75,6 +75,7 @@ angular.module('mm.addons.grades')
         applytoall: 0,
         grades: grades
       };
+      console.log(data);
       return $mmSite.write('mod_assign_save_grades', data).then(function() {
         return $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
       });

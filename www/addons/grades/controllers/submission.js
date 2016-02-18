@@ -78,9 +78,9 @@ angular.module('mm.addons.grades')
                   }
               }];
               $mmaGrades.addGrade(assign, grades, data.uniqueId);
-              data.file.forEach(function(attach) {
-                $mmaGrades.uploadFiles(attach, submission.id);
-              });
+              // data.file.forEach(function(attach) {
+              //   $mmaGrades.uploadFiles(attach, submission.id);
+              // });
           });
       });
     };

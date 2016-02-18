@@ -61,9 +61,10 @@ angular.module('mm.addons.grades')
 
     $scope.addGrade = function() {
       var grades = [];
+      var Ids = [];
       return $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {
-              grades = [{
+              grades[grades.length] = {
                   userid: data.userid,
                   grade: data.grade,
                   attemptnumber: -1,
@@ -71,17 +72,23 @@ angular.module('mm.addons.grades')
                   workflowstate: "",
                   plugindata: {
                     assignfeedbackcomments_editor: {
-                      text: data.comment,
+                      text:  data.comment,
                       format: 4
                     },
                     files_filemanager: data.files_filemanager // itemId
                   }
-              }];
-              $mmaGrades.addGrade(assign, grades, data.uniqueId);
-              data.file.forEach(function(attach) {
-                $mmaGrades.uploadFiles(attach, submission.id);
-              });
+              };
+              Ids[Ids.length] = {
+                uniqueid: data.uniqueId
+              };
+
+              // data.file.forEach(function(attach) {
+              //   $mmaGrades.uploadFiles(attach, submission.id);
+              // });
           });
+          console.log(grades);
+          console.log(Ids);
+          $mmaGrades.addGrade(assign, grades, Ids);
       });
     };
 

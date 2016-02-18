@@ -21,12 +21,11 @@ angular.module('mm.addons.grades')
  * @ngdoc controller
  * @name mmaGradesTableCtrl
  */
-.controller('mmaGradesListCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite, $mmApp) {
+.controller('mmaGradesListCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite) {
 
     var course = $stateParams.course,
         courseid = course.id;
         $scope.courseid = courseid;
-        console.log($mmApp.getDB().getAll('grading_info'));
 
     function fetchParticipants(refresh) {
         return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {

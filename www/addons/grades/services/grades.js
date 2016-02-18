@@ -68,15 +68,17 @@ angular.module('mm.addons.grades')
      * @param {Array} grades        The grades data
      * @return {Promise}
      */
-    self.addGrade = function(assign, grades, uniqueId) {
-
+    self.addGrade = function(assign, grades, Ids) {
       var data = {
         assignmentid: assign,
         applytoall: 0,
         grades: grades
       };
+      console.log(data);
       return $mmSite.write('mod_assign_save_grades', data).then(function() {
-        return $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
+        Ids.foreach(function(uniqueId) {
+          return $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
+        });
       });
     };
 

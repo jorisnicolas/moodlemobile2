@@ -28,11 +28,11 @@
               </div>
             </div>
         </div>
-        <button type="submit" class="button button-full button-energized" ng-click="showAlert()" ng-disabled="!grade.note.length || send">
+        <button type="submit" class="button button-full button-calm" ng-click="showAlert()" ng-disabled="!grade.note.length || send">
           {{ 'mma.grades.send' | translate }}
         </button>
       </form>
-      <a class="button button-block button-energized" ng-click="addGrade()">Tout synchronisé</a>
+      <a class="button button-block button-calm" ng-click="addGrade()">Tout synchronisé</a>
       <p ng-if="submission.attachments.length == 0 || submission.attachments.length == null">Aucun fichier joint</p>
     </ion-content>
 </ion-view>

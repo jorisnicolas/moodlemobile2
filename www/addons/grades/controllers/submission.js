@@ -35,7 +35,7 @@ angular.module('mm.addons.grades')
 
     // console.log($mmFS.getFile(file)); //get the file
     // console.log(file);
-    console.log($mmApp.getDB().getAll(mmaGradingInfo));
+    //console.log($mmApp.getDB().getAll(mmaGradingInfo));
     // console.log($mmFilepool.getFileDownloadId(submission.attachments[0].filepath, submission.attachments[0].fileurl));
     // console.log($mmFilepool._getFilePath($mmSite.getId(), $mmFilepool._getFileIdByUrl(submission.attachments[0].fileurl)));
     // console.log($mmFilepool._getFileIdByUrl(submission.attachments[0].fileurl));

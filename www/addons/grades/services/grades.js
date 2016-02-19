@@ -161,19 +161,7 @@ angular.module('mm.addons.grades')
         instanceid : $mmSite.getUserId()
       };
 
-      return $mmSite.write('core_files_upload', data, function() {
-        if(itemId == -1){
-          var updateStatus = null; //mettre des valeurs correct
-          var updateGrade = -1; //mettre des valeurs correct
-          var updateComment = ""; //mettre des valeurs correct
-          $mmGrades.updateGradingInfo(courseid,
-                                      submission.userid,
-                                      updateStatus,
-                                      updateGrade,
-                                      updateComment,
-                                      submission.id);
-        }
-      });
+      return $mmSite.write('core_files_upload', data);
     };
 
     self.downloadAll = function() {

@@ -37,14 +37,14 @@ angular.module('mm.addons.grades')
         });
     }
 
-    // function capabilities() {
-    //   return $mmaGrades.hasCapabilities(courseid).then(function(res) {
-    //     $scope.capabilities = true;//res;
-    //   }, function(message) {
-    //     $mmUtil.showErrorModal(message);
-    //     $scope.errormessage = message;
-    //   });
-    // }
+    function capabilities() {
+      return $mmaGrades.hasCapabilities(courseid).then(function(res) {
+        $scope.capabilities = res;
+      }, function(message) {
+        $mmUtil.showErrorModal(message);
+        $scope.errormessage = message;
+      });
+    }
 
 
     // Get first participants.
@@ -57,11 +57,11 @@ angular.module('mm.addons.grades')
         $scope.participantsLoaded = true;
     });
 
-    /*capabilities().then(function() {
+    capabilities().then(function() {
       $mmSite.write('core_enrol_get_enrolled_users_with_capability',{
         courseid: courseid
       });
-    });*/
+    });
 
     $scope.refreshParticipants = function() {
         fetchParticipants(true).finally(function() {

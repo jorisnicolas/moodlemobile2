@@ -74,11 +74,12 @@ angular.module('mm.addons.grades')
         applytoall: 0,
         grades: grades
       };
-      return $mmSite.write('mod_assign_save_grades', data);/*.then(function() {
+      console.log(data);
+      return $mmSite.write('mod_assign_save_grades', data).then(function() {
         Ids.foreach(function(uniqueId) {
           return $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
         });
-      });*/
+      });
     };
 
     /**

@@ -26,6 +26,7 @@ angular.module('mm.addons.grades')
     var course = $stateParams.course,
         courseid = course.id;
         $scope.courseid = courseid;
+        console.log($stateParams);
 
     function fetchParticipants(refresh) {
         return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {

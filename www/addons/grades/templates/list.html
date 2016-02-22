@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <ion-view view-title="{{ 'mma.grades.grades' | translate }}">
     <mm-split-view load-when="participantsLoaded" component="mmaGradesList">
           <ion-content>
@@ -9,7 +8,6 @@
               <mm-split-view load-when="participantsLoaded" component="mmaGradesList">
                 <p ng-if="participants && participants.length == 0" class="padding">{{ 'mma.grades.noContent' | translate }}</p>
                 <div class="item item-body">
-                  <a class="button button-block button-energized" ng-click="downloadAll()">Tout télécharger</a>
                 </div>
                 <ul class="list" ng-if="participants && participants.length > 0">
                     <li ng-repeat="participant in participants">
@@ -29,35 +27,3 @@
             </mm-loading>
     </mm-split-view>
 </ion-view>
-=======
-<ion-view view-title="{{ 'mma.grades.grades' | translate }}">
-    <mm-split-view load-when="participantsLoaded" component="mmaGradesList">
-          <ion-content>
-            <!-- ion-refresher needs to be direct child of ion-content to work with native scrolling -->
-            <ion-refresher pulling-text="{{ 'mm.core.pulltorefresh' | translate }}" ng-if="participantsLoaded" on-refresh="refreshParticipants()">
-            </ion-refresher>
-            <mm-loading hide-until="participantsLoaded">
-              <mm-split-view load-when="participantsLoaded" component="mmaGradesList">
-                <p ng-if="participants && participants.length == 0" class="padding">{{ 'mma.grades.noContent' | translate }}</p>
-                <div class="item item-body">
-                  <a class="button button-block button-calm" ng-click="downloadAll()">Tout télécharger</a>
-                </div>
-                <ul class="list" ng-if="participants && participants.length > 0">
-                    <li ng-repeat="participant in participants">
-                        <a class="item item-avatar" mm-split-view-link="site.grades-teacher({courseid: courseid, userid: participant.id})" title="{{participant.fullname}}">
-                            <img ng-src="{{participant.profileimageurl}}" alt="">
-                            <mm-format-text>{{participant.fullname}}</mm-format-text>
-                        </a>
-                    </li>
-                </ul>
-
-                <!--<ion-infinite-scroll ng-if="canLoadMore"
-                        immediate-check="false"
-                        on-infinite="loadMoreParticipants()" >
-                </ion-infinite-scroll>-->
-
-              </mm-split-view>
-            </mm-loading>
-    </mm-split-view>
-</ion-view>
->>>>>>> 48216aacac5f7c08efa31ccf1be1a227d0e43daf

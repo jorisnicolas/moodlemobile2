@@ -27,7 +27,7 @@ angular.module('mm.addons.grades')
           userid = $stateParams.userid;
     $scope.courseid = courseid;
     $scope.userid = userid;
-    console.log(isGraded());
+    isGraded();
 
 
     function fetchGrades(refresh) {
@@ -52,8 +52,8 @@ angular.module('mm.addons.grades')
                       submission.text = $mmaModAssign.getSubmissionText(submission);
                       submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);
                       if(a.submission.submissions[key].userid == userid) {
+                        a.key = key;
                         $scope.submission = a;
-                        $scope.key = key;
                       }
                   });
               });
@@ -72,13 +72,15 @@ angular.module('mm.addons.grades')
     // }
 
     function isGraded(){
+      var icon;
       return $mmApp.getDB().getAll('grading_info').then(function(item){
         item.forEach(function(data){
+          icon = "ion-close-round";
             if(data.userid == userid){
-              return "ion-checkmark-round";
+              icon = "ion-checkmark-round";
             }
-            return "ion-close-round";
         });
+        $scope.icon = icon;
       });
     }
 

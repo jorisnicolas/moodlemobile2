@@ -27,7 +27,7 @@ angular.module('mm.addons.grades')
     var userid = $stateParams.userid;
     var assign = $stateParams.assign;
     var courseid = $stateParams.courseid;
-    $scope.title = submission.userfullname;
+    $scope.title = "Nom-Prenom-Cours";
     $scope.submission = submission;
     $scope.component = $mmaGrades;
     $scope.isPluginAvailable = isSubmissionPluginAvailable();
@@ -54,8 +54,9 @@ angular.module('mm.addons.grades')
 
     $scope.saveGrade = function(note, comment) {
       $scope.send = true;
+      var itemid = -1;
       var file = $mmaGrades.getLocalSubmissionFile(submission);
-      $mmaGrades.saveGrade(courseid + "_" + userid + "_" + submission.id, userid, note, comment, submission.id, file);
+      $mmaGrades.saveGrade(courseid + "_" + userid + "_" + submission.id, userid, note, comment, itemid, file);
       console.log($mmApp.getDB().getAll('grading_info'));
     };
 
@@ -82,9 +83,9 @@ angular.module('mm.addons.grades')
                 uniqueid: data.uniqueId
               };
 
-              data.file.forEach(function(attach) {
-                $mmaGrades.uploadFiles(attach, submission.id);
-              });
+              // data.file.forEach(function(attach) {
+              //   $mmaGrades.uploadFiles(attach, submission.id);
+              // });
           });
           $mmaGrades.addGrade(assign, grades, Ids);
       });

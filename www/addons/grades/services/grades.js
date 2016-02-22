@@ -160,7 +160,7 @@ angular.module('mm.addons.grades')
         contextlevel: "user",
         instanceid : $mmSite.getUserId()
       };
-
+      console.log(data);
       return $mmSite.write('core_files_upload', data);
     };
 

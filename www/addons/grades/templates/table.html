@@ -23,10 +23,17 @@
             </div>
 
             <div ng-show="!capabilities" class="item item-body" ng-repeat="a in assign">
+<<<<<<< HEAD
                 <a ui-sref="site.grades-grading({submission: a.submission.submissions[a.key], userid: a.submission.submissions[a.key].userid, assign: a.id, courseid: courseid})" class="button button-block button-calm icon-right {{icon}} ">
                   {{a.name}} - <span ng-if="a.submission.submissions[a.key].attachments.length == 0 || a.submission.submissions[a.key].attachments.length == null">Non rendu</span>
                                <span ng-if="a.submission.submissions[a.key].attachments.length == 1">{{a.submission.submissions[a.key].attachments.length}} fichier joint</span>
                                <span ng-if="a.submission.submissions[a.key].attachments.length > 1">{{a.submission.submissions[a.key].attachments.length}} fichiers joints</span>
+=======
+                <a ui-sref="site.grades({submission: a.submission.submissions[key], userid: a.submission.submissions[key].userid, assign: a.id, courseid: courseid})" class="button button-block button-calm icon-right">
+                  {{a.name}} - <span ng-if="a.submission.submissions[key].attachments.length == 0 || a.submission.submissions[key].attachments.length == null">Non rendu</span>
+                               <span ng-if="a.submission.submissions[key].attachments.length == 1">{{a.submission.submissions[key].attachments.length}} fichier joint</span>
+                               <span ng-if="a.submission.submissions[key].attachments.length > 1">{{a.submission.submissions[key].attachments.length}} fichiers joints</span>
+>>>>>>> a999b54bbd949f390755c06af9b2da016bd516ef
                 </a>
             </div>
 

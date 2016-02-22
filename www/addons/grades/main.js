@@ -31,7 +31,11 @@ angular.module('mm.addons.grades', [])
             }
         },
         params: {
-            course: null
+            course: null,
+            submission: null,
+            userid: null,
+            assign: null,
+            courseid: null
         }
     })
     .state('site.grades-teacher', {

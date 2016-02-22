@@ -29,7 +29,13 @@ angular.module('mm.addons.grades')
 
     function fetchParticipants(refresh) {
         return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {
-            $scope.participants = data;
+            var students = [];
+            data.forEach(function(participants) {
+              if(participants.roles[0].roleid === 5) {
+                students[students.length] = participants;
+              }
+            });
+            $scope.participants = students;
             $scope.canLoadMore = true;
         }, function(message) {
             $mmUtil.showErrorModal(message);

@@ -29,6 +29,7 @@ angular.module('mm.addons.grades')
     $scope.userid = userid;
     console.log(isGraded());
 
+
     function fetchGrades(refresh) {
         return $mmaGrades.getGradesTable(courseid, userid, refresh).then(function(table) {
             $scope.gradesTable = table;

@@ -15,69 +15,82 @@
 angular.module('mm.addons.grades')
 
 /**
- * Controller to handle course grades.
- *
- * @module mm.addons.grades
- * @ngdoc controller
- * @name mmaGradesTableCtrl
- */
+* Controller to handle course grades.
+*
+* @module mm.addons.grades
+* @ngdoc controller
+* @name mmaGradesTableCtrl
+*/
 .controller('mmaGradesListCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite) {
+  var courseid = 0;
 
-    var course = $stateParams.course,
-        courseid = course.id;
-        $scope.courseid = courseid;
+  if($stateParams.submission){
+    courseid = $stateParams.courseid;
+    $scope.submission = $stateParams.submission;
+    $scope.assign = $stateParams.assign;
+    $scope.userid = $stateParams.userid;
+    $scope.courseid = courseid;
+    $scope.gradesBol = false;
+  }
+  else{
+    var course = $stateParams.course;
+    courseid = course.id;
+    $scope.courseid = courseid;
+    $scope.gradesBol = true;
+  }
 
-    function fetchParticipants(refresh) {
-        return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {
-            var students = [];
-            data.forEach(function(participants) {
-              if(participants.roles[0].roleid === 5) {
-                students[students.length] = participants;
-              }
-            });
-            $scope.participants = students;
-            $scope.canLoadMore = true;
-        }, function(message) {
-            $mmUtil.showErrorModal(message);
-            $scope.canLoadMore = false;
-        });
-    }
-
-    function capabilities() {
-      return $mmaGrades.hasCapabilities(courseid).then(function(res) {
-        $scope.capabilities = res;
-      }, function(message) {
-        $mmUtil.showErrorModal(message);
-        $scope.errormessage = message;
+  function fetchParticipants(refresh) {
+    return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {
+      var students = [];
+      data.forEach(function(participants) {
+        if(participants.roles[0].roleid === 5) {
+          students[students.length] = participants;
+        }
       });
-    }
-
-
-    // Get first participants.
-    fetchParticipants().then(function() {
-        // Add log in Moodle.
-        $mmSite.write('core_user_view_user_list', {
-            courseid: courseid
-        });
-    }).finally(function() {
-        $scope.participantsLoaded = true;
+      $scope.participants = students;
+      $scope.canLoadMore = true;
+    }, function(message) {
+      $mmUtil.showErrorModal(message);
+      $scope.canLoadMore = false;
     });
+  }
 
-    capabilities().then(function() {
-      $mmSite.write('core_enrol_get_enrolled_users_with_capability',{
-        courseid: courseid
-      });
+  function capabilities() {
+    return $mmaGrades.hasCapabilities(courseid).then(function(res) {
+      $scope.capabilities = res;
+    }, function(message) {
+      $mmUtil.showErrorModal(message);
+      $scope.errormessage = message;
     });
+  }
 
-    $scope.refreshParticipants = function() {
-        fetchParticipants(true).finally(function() {
-            $scope.$broadcast('scroll.refreshComplete');
-        });
-    };
 
-    $scope.loadMoreParticipants = function(){
-        fetchParticipants().finally(function() {
-            $scope.$broadcast('scroll.infiniteScrollComplete');
-        });
-    };
+  // Get first participants.
+  fetchParticipants().then(function() {
+    // Add log in Moodle.
+    $mmSite.write('core_user_view_user_list', {
+      courseid: courseid
+    });
+  }).finally(function() {
+    $scope.participantsLoaded = true;
+  });
+
+  capabilities().then(function() {
+    $mmSite.write('core_enrol_get_enrolled_users_with_capability',{
+      courseid: courseid
+    });
+  });
+
+  $scope.refreshParticipants = function() {
+    fetchParticipants(true).finally(function() {
+      $scope.$broadcast('scroll.refreshComplete');
+    });
+  };
+
+  $scope.loadMoreParticipants = function(){
+    fetchParticipants().finally(function() {
+      $scope.$broadcast('scroll.infiniteScrollComplete');
+    });
+  };
+
 });

@@ -23,12 +23,11 @@
             </div>
 
             <div ng-show="!capabilities" class="item item-body" ng-repeat="a in assign">
-                <a ui-sref="site.grades-grading({submission: a.submission.submissions[key], userid: a.submission.submissions[key].userid, assign: a.id, courseid: courseid})" class="button button-block button-calm icon-right">
+                <a ui-sref="site.grades({submission: a.submission.submissions[key], userid: a.submission.submissions[key].userid, assign: a.id, courseid: courseid})" class="button button-block button-calm icon-right">
                   {{a.name}} - <span ng-if="a.submission.submissions[key].attachments.length == 0 || a.submission.submissions[key].attachments.length == null">Non rendu</span>
                                <span ng-if="a.submission.submissions[key].attachments.length == 1">{{a.submission.submissions[key].attachments.length}} fichier joint</span>
                                <span ng-if="a.submission.submissions[key].attachments.length > 1">{{a.submission.submissions[key].attachments.length}} fichiers joints</span>
                 </a>
-                {{icon}}
             </div>
 
         </mm-loading>

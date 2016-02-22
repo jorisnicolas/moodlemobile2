@@ -24,12 +24,6 @@ angular.module('mm.addons.grades')
 .controller('mmaGradesListCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite) {
   var courseid = 0;
 
-<<<<<<< HEAD
-    var course = $stateParams.course,
-        courseid = course.id;
-        $scope.courseid = courseid;
-        console.log($stateParams);
-=======
   if($stateParams.submission){
     courseid = $stateParams.courseid;
     $scope.submission = $stateParams.submission;
@@ -44,7 +38,6 @@ angular.module('mm.addons.grades')
     $scope.courseid = courseid;
     $scope.gradesBol = true;
   }
->>>>>>> a999b54bbd949f390755c06af9b2da016bd516ef
 
   function fetchParticipants(refresh) {
     return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {

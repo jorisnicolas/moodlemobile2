@@ -24,10 +24,10 @@ angular.module('mm.addons.grades')
 .controller('mmaGradesTableCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite, $mmaModAssign, $mmApp) {
 
     var courseid = $stateParams.courseid,
-          userid = $stateParams.userid;
+        userid = $stateParams.userid;
     $scope.courseid = courseid;
     $scope.userid = userid;
-    isGraded();
+    console.log($stateParams);
 
 
     function fetchGrades(refresh) {
@@ -71,18 +71,18 @@ angular.module('mm.addons.grades')
     //   });
     // }
 
-    function isGraded(){
-      var icon;
-      return $mmApp.getDB().getAll('grading_info').then(function(item){
-        item.forEach(function(data){
-          icon = "ion-close-round";
-            if(data.userid == userid){
-              icon = "ion-checkmark-round";
-            }
-        });
-        $scope.icon = icon;
-      });
-    }
+    // function isGraded(){
+    //   var icon;
+    //   return $mmApp.getDB().getAll('grading_info').then(function(item){
+    //     item.forEach(function(data){
+    //       icon = "ion-close-round";
+    //         if(data.userid == userid){
+    //           icon = "ion-checkmark-round";
+    //         }
+    //     });
+    //     $scope.icon = icon;
+    //   });
+    // }
 
     fetchAssignment().finally(function() {
         $scope.assignmentLoaded = true;

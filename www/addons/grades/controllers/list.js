@@ -22,22 +22,9 @@ angular.module('mm.addons.grades')
 * @name mmaGradesTableCtrl
 */
 .controller('mmaGradesListCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite) {
-  var courseid = 0;
-
-  if($stateParams.submission){
-    courseid = $stateParams.courseid;
-    $scope.submission = $stateParams.submission;
-    $scope.assign = $stateParams.assign;
-    $scope.userid = $stateParams.userid;
-    $scope.courseid = courseid;
-    $scope.gradesBol = false;
-  }
-  else{
-    var course = $stateParams.course;
-    courseid = course.id;
-    $scope.courseid = courseid;
-    $scope.gradesBol = true;
-  }
+  var course = $stateParams.course,
+  courseid = course.id;
+  $scope.courseid = courseid;
 
   function fetchParticipants(refresh) {
     return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {

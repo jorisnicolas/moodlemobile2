@@ -15,7 +15,6 @@
 angular.module('mm.addons.grades')
 
 /**
-<<<<<<< HEAD
 * Service to handle grades.
 *
 * @module mm.addons.grades
@@ -23,177 +22,12 @@ angular.module('mm.addons.grades')
 * @name $mmaGrades
 */
 
-.config(function($mmAppProvider, mmaGradingInfo) {
-  var stores = [
-    {
-      name: mmaGradingInfo,
-      keyPath: ['uniqueId'],
-      indexes: [
-        {
-          name: 'uniqueId',
-        },
-        {
-          name: 'userid',
-        },
-        {
-          name: 'grade',
-        },
-        {
-          name: 'comment',
-        },
-        {
-          name: 'files_filemanager',
-        },
-        {
-          name: 'file',
-        }
-      ]
-    }
-  ];
-  $mmAppProvider.registerStores(stores);
-})
 
-.factory('$mmaGrades', function($q, $log, $mmFilepool, $mmSite, $mmText, $ionicPlatform, $translate, $mmCourse, $mmCourses, $mmApp, mmaGradingInfo) {
-
-  $log = $log.getInstance('$mmaGrades');
-
-  var self = {};
-
-  /**
-  * Add the grades from the mmApp bd.
-  *
-  * @module mm.addons.grades
-  * @ngdoc method
-  * @name $mmaGrades#addGrade
-  * @param {String} assign       The assignment id.
-  * @param {Array} grades        The grades data
-  * @return {Promise}
-  */
-  self.addGrade = function(assign, grades, Ids) {
-    var data = {
-      assignmentid: assign,
-      applytoall: 0,
-      grades: grades
-    };
-    return $mmSite.write('mod_assign_save_grades', data).then(function() {
-      Ids.foreach(function(uniqueId) {
-        return $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
-      });
-    });
-  };
-
-  /**
-  * Add a grade to the mmApp bd (grading_info)
-  *
-  * @module mm.addons.grades
-  * @ngdoc method
-  * @name $mmaGrades#saveGrade
-  * @param {Array} grades        The grades data
-  * @return {Promise}
-  */
-  self.saveGrade = function(uniqueId, userid, grade, comment, files_filemanager, file) {
-    return $mmApp.getDB().insert(mmaGradingInfo, {
-      uniqueId: uniqueId,
-      userid: userid,
-      grade: grade,
-      comment: comment,
-      files_filemanager: files_filemanager,
-      file : file
-    }
-  );
-};
-
-
-/**
-* Get the local path of a file
-*
-* @module mm.addons.grades
-* @ngdoc method
-* @name $mmaGrades#getLocalSubmissionFile
-* @param {Object} submission       The file's submission
-* @return {Promise}                localfiles
-*/
-self.getLocalSubmissionFile = function(submission) {
-  var files = [];
-  var localFiles = [];
-  if (submission.plugins) {
-    submission.plugins.forEach(function(plugin) {
-      if (plugin.type == 'file' && plugin.fileareas[0].files) {
-        files = plugin.fileareas[0].files;
-      }
-    });
-  }
-  if (files.length > 0) {
-    files.forEach(function(file) {
-      var uniqueId = $mmFilepool._getFileIdByUrl(file.fileurl);
-
-      var path = $mmFilepool._getFilePath($mmSite.getId(), uniqueId);
-      var fileWithLocalPath;
-      if (path) {
-        fileWithLocalPath = file;
-        fileWithLocalPath.localpath = path;
-        localFiles.push(fileWithLocalPath);
-      }
-    });
-  }
-  return localFiles;
-};
-=======
- * Service to handle grades.
- *
- * @module mm.addons.grades
- * @ngdoc service
- * @name $mmaGrades
- */
-
-
-.factory('$mmaGrades', function($q, $log, $mmFilepool, $mmSite, $mmText, $ionicPlatform, $translate, $mmCourse, $mmCourses, $mmApp) {
+.factory('$mmaGrades', function($q, $log, $mmSite, $mmText, $ionicPlatform, $translate, $mmCourse, $mmCourses) {
 
     $log = $log.getInstance('$mmaGrades');
 
     var self = {};
-
-    /**
-     * Formats the response of gradereport_user_get_grades_table to be rendered.
-     *
-     * @param  {Object}  table      JSON object representing a table with data.
-     * @param  {Boolean} showSimple True if simple table should be shown, false for full table.
-     * @return {Object}             Formatted HTML table.
-     */
-    function formatGradesTable(table, showSimple) {
-        var formatted = {
-            columns: [],
-            rows: []
-        };
->>>>>>> 466fab02bb6ed155739f4ed27510feab02146737
-
-/**
-* Upload he local files too moodle
-*
-* @module mm.addons.grades
-* @ngdoc method
-* @name $mmaGrades#uploadFiles
-* @param {Object} file       The file to upload
-* @param {Int} id            The itemID
-* @return {Promise}
-*/
-self.uploadFiles = function(file, id) {
-  var data = {
-    component: "user",
-    filearea: "draft",
-    itemid: id,
-    filepath: file.localpath,
-    filename: file.filename,
-    filecontent: "Mettre un truc ici",
-    contextlevel: "user",
-    instanceid : $mmSite.getUserId()
-  };
-  return $mmSite.write('core_files_upload', data);
-};
-
-self.downloadAll = function() {
-  console.log("telechargement");
-};
 /**
 * Formats the response of gradereport_user_get_grades_table to be rendered.
 *

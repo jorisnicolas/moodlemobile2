@@ -16,7 +16,6 @@ angular.module('mm.addons.grades', [])
 
 .constant('mmaGradesPriority', 400)
 .constant('mmaGradesViewGradesPriority', 400)
-.constant('mmaGradingInfo', 'grading_info')
 
 .config(function($stateProvider, $mmUserDelegateProvider, $mmCoursesDelegateProvider, mmaGradesPriority, mmaGradesViewGradesPriority) {
 
@@ -45,21 +44,6 @@ angular.module('mm.addons.grades', [])
         params: {
             courseid: null,
             userid: null
-        }
-    })
-    .state('site.grades-grading', {
-        url: '/grades-grading',
-        views: {
-            'site': {
-                templateUrl: 'addons/grades/templates/submission.html',
-                controller: 'mmaGradesSubmissionCtrl'
-            }
-        },
-        params: {
-            submission: null,
-            userid: null,
-            assign: null,
-            courseid: null
         }
     });
 

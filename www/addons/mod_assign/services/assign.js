@@ -21,7 +21,38 @@ angular.module('mm.addons.mod_assign')
  * @ngdoc controller
  * @name $mmaModAssign
  */
-.factory('$mmaModAssign', function($mmSite, $q, $mmUser, $mmSitesManager) {
+
+ .config(function($mmAppProvider, mmaGradingInfo) {
+     var stores = [
+         {
+             name: mmaGradingInfo,
+             keyPath: ['uniqueId'],
+             indexes: [
+                 {
+                     name: 'uniqueId',
+                 },
+                 {
+                     name: 'userid',
+                 },
+                 {
+                     name: 'grade',
+                 },
+                 {
+                     name: 'comment',
+                 },
+                 {
+                     name: 'files_filemanager',
+                 },
+                 {
+                     name: 'file',
+                 }
+             ]
+         }
+     ];
+     $mmAppProvider.registerStores(stores);
+ })
+
+.factory('$mmaModAssign', function($mmSite, $q, $mmUser, $mmSitesManager, mmaGradingInfo, $mmFilepool, $mmApp) {
     var self = {};
 
     /**
@@ -177,6 +208,117 @@ angular.module('mm.addons.mod_assign')
             return submissions;
         });
     };
+
+    /**
+     * Add the grades from the mmApp bd.
+     *
+     * @module mm.addons.grades
+     * @ngdoc method
+     * @name $mmaGrades#addGrade
+     * @param {String} assign       The assignment id.
+     * @param {Array} grades        The grades data
+     * @return {Promise}
+     */
+    self.addGrade = function(assign, grades, Ids) {
+      var data = {
+        assignmentid: assign,
+        applytoall: 0,
+        grades: grades
+      };
+      console.log(data);
+      return $mmSite.write('mod_assign_save_grades', data).then(function() {
+        Ids.foreach(function(uniqueId) {
+          return $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
+        });
+      });
+    };
+
+    /**
+     * Add a grade to the mmApp bd (grading_info)
+     *
+     * @module mm.addons.grades
+     * @ngdoc method
+     * @name $mmaGrades#saveGrade
+     * @param {Array} grades        The grades data
+     * @return {Promise}
+     */
+    self.saveGrade = function(uniqueId, userid, grade, comment, files_filemanager, file) {
+      return $mmApp.getDB().insert(mmaGradingInfo, {
+                                                    uniqueId: uniqueId,
+                                                    userid: userid,
+                                                    grade: grade,
+                                                    comment: comment,
+                                                    files_filemanager: files_filemanager,
+                                                    file : file
+                                                   }
+                                  );
+    };
+
+
+    /**
+     * Get the local path of a file
+     *
+     * @module mm.addons.grades
+     * @ngdoc method
+     * @name $mmaGrades#getLocalSubmissionFile
+     * @param {Object} submission       The file's submission
+     * @return {Promise}                localfiles
+     */
+    self.getLocalSubmissionFile = function(submission) {
+      var files = [];
+      var localFiles = [];
+      if (submission.plugins) {
+        submission.plugins.forEach(function(plugin) {
+          if (plugin.type == 'file' && plugin.fileareas[0].files) {
+            files = plugin.fileareas[0].files;
+          }
+        });
+      }
+      if (files.length > 0) {
+        files.forEach(function(file) {
+          var uniqueId = $mmFilepool._getFileIdByUrl(file.fileurl);
+
+          var path = $mmFilepool._getFilePath($mmSite.getId(), uniqueId);
+          var fileWithLocalPath;
+          if (path) {
+            fileWithLocalPath = file;
+            fileWithLocalPath.localpath = path;
+            localFiles.push(fileWithLocalPath);
+           }
+        });
+      }
+      return localFiles;
+    };
+
+    /**
+     * Upload he local files too moodle
+     *
+     * @module mm.addons.grades
+     * @ngdoc method
+     * @name $mmaGrades#uploadFiles
+     * @param {Object} file       The file to upload
+     * @param {Int} id            The itemID
+     * @return {Promise}
+     */
+    self.uploadFiles = function(file, id) {
+      var data = {
+        component: "user",
+        filearea: "draft",
+        itemid: id,
+        filepath: file.localpath,
+        filename: file.filename,
+        filecontent: "Mettre un truc ici",
+        contextlevel: "user",
+        instanceid : $mmSite.getUserId()
+      };
+      console.log(data);
+      return $mmSite.write('core_files_upload', data);
+    };
+
+    self.downloadAll = function() {
+      console.log("telechargement");
+    };
+
 
     /**
      * Check if assignments plugin is enabled in a certain site.

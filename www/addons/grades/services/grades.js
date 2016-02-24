@@ -15,6 +15,7 @@
 angular.module('mm.addons.grades')
 
 /**
+<<<<<<< HEAD
 * Service to handle grades.
 *
 * @module mm.addons.grades
@@ -137,6 +138,34 @@ self.getLocalSubmissionFile = function(submission) {
   }
   return localFiles;
 };
+=======
+ * Service to handle grades.
+ *
+ * @module mm.addons.grades
+ * @ngdoc service
+ * @name $mmaGrades
+ */
+
+
+.factory('$mmaGrades', function($q, $log, $mmFilepool, $mmSite, $mmText, $ionicPlatform, $translate, $mmCourse, $mmCourses, $mmApp) {
+
+    $log = $log.getInstance('$mmaGrades');
+
+    var self = {};
+
+    /**
+     * Formats the response of gradereport_user_get_grades_table to be rendered.
+     *
+     * @param  {Object}  table      JSON object representing a table with data.
+     * @param  {Boolean} showSimple True if simple table should be shown, false for full table.
+     * @return {Object}             Formatted HTML table.
+     */
+    function formatGradesTable(table, showSimple) {
+        var formatted = {
+            columns: [],
+            rows: []
+        };
+>>>>>>> 466fab02bb6ed155739f4ed27510feab02146737
 
 /**
 * Upload he local files too moodle

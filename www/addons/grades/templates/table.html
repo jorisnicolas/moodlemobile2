@@ -14,7 +14,10 @@
                         </th>
                     </thead>
                     <tbody>
-                        <tr ui-sref='site.grades-grading({courseid: courseid, userid: userid, assign: assign[0].id, submission: {}})' ng-repeat="myrow in gradesTable.rows track by $index" ng-bind-html="myrow"></tr>
+                      <div class="">
+                        {{assign[1].id}}
+                      </div>
+                        <tr ui-sref='site.mod_assign-submissionsList({assignid: assign[1].id, courseid: courseid, submissions: submissions})' ng-repeat="myrow in gradesTable.rows track by $index" ng-bind-html="myrow"></tr>
                     </tbody>
                 </table>
             </div>
@@ -23,7 +26,7 @@
             </div>
 
             <div ng-show="!capabilities" class="item item-body" ng-repeat="a in assign">
-                                <a ui-sref="site.grades-grading({courseid: courseid, assign: a.id, submission: a.submission.submissions[a.key]})" class="button button-block button-calm icon-right {{icon}} ">
+                                <a ui-sref="site.mod_assign-submissionsList({assignid: a.id, courseid: courseid, submissions: submissions})" class="button button-block button-calm icon-right {{icon}} ">
                   {{a.name}} - <span ng-if="a.submission.submissions[a.key].attachments.length == 0 || a.submission.submissions[a.key].attachments.length == null">Non rendu</span>
                                <span ng-if="a.submission.submissions[a.key].attachments.length == 1">{{a.submission.submissions[a.key].attachments.length}} fichier joint</span>
                                <span ng-if="a.submission.submissions[a.key].attachments.length > 1">{{a.submission.submissions[a.key].attachments.length}} fichiers joints</span>

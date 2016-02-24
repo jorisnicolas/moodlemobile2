@@ -43,6 +43,7 @@ angular.module('mm.addons.grades')
             $scope.title = assign.name || $scope.title;
             $scope.description = assign.intro || $scope.description;
             $scope.assign = assign;
+            console.log(assign);
             angular.forEach(assign, function(a) {
               return $mmaModAssign.getSubmissions(a.id, refresh).then(function(data) {
                   a.submission = data;

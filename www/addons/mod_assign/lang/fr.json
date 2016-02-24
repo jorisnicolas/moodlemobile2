@@ -7,5 +7,12 @@
     "duedateno": "Pas de date de remise",
     "submissions": "Devoirs",
     "userwithid": "Utilisateur d'Id {{id}}",
-    "viewsubmission": "Afficher devoir"
+    "viewsubmission": "Afficher devoir",
+    "noContent": "Aucun devoirs",
+    "grade": "Note",
+    "comment": "Commentaire",
+    "send": "Envoyer",
+    "sync": "Tout synchroniser",
+    "downloadall": "Tout télécharger",
+    "noSub": "Aucun fichier rendu"
 }

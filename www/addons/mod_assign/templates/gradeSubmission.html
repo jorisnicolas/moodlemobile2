@@ -4,11 +4,11 @@
 
       <form ng-submit="saveGrade(grade.note, grade.comment)" name="itemGrade" ng-if="submission.attachments.length > 0">
           <div class="item item-text-wrap">
-            <span class="input-label">{{ 'mma.grades.grade' | translate }}</span>
+            <span class="input-label">{{ 'mma.mod_assign.grade' | translate }}</span>
             <input style="width:100%" type="text" placeholder="..." ng-model="grade.note">
           </div>
           <div class="item item-text-wrap" ng-if="submission.attachments.length > 1 && isPluginAvailable">
-            <span class="input-label">{{ 'mma.grades.comment' | translate }}</span>
+            <span class="input-label">{{ 'mma.mod_assign.comment' | translate }}</span>
             <textarea style="width:100%" rows="10" placeholder="..." ng-model="grade.comment"></textarea>
           </div>
         <div class="card" ng-repeat="attachment in submission.attachments">
@@ -19,8 +19,8 @@
               <div class="item item-divider"></div>
               <mm-file file="attachment" component="{{component}}" component-id="{{submission.id}}"></mm-file>
                 <div class="item" ng-if="submission.attachments.length == 1 && isPluginAvailable">
-                  <span class="input-label">{{ 'mma.grades.comment' | translate }}</span>
-                  <textarea style="width:100%" rows="10" placeholder="{{ 'mma.grades.comment' | translate }}" ng-model="grade.comment"></textarea>
+                  <span class="input-label">{{ 'mma.mod_assign.comment' | translate }}</span>
+                  <textarea style="width:100%" rows="10" placeholder="{{ 'mma.mod_assign.comment' | translate }}" ng-model="grade.comment"></textarea>
                 </div>
               <div class="item">
                 <div class="item-note">{{submission.status}}</div>
@@ -29,10 +29,10 @@
             </div>
         </div>
         <button type="submit" class="button button-full button-calm" ng-click="showAlert()" ng-disabled="!grade.note.length || send">
-          {{ 'mma.grades.send' | translate }}
+          {{ 'mma.mod_assign.send' | translate }}
         </button>
       </form>
-      <a class="button button-block button-calm" ng-click="addGrade()">Tout synchroniser</a>
-      <p ng-if="submission.attachments.length == 0 || submission.attachments.length == null">Aucun fichier joint</p>
+      <a ng-if="submission.attachments.length > 0" class="button button-block button-calm" ng-click="addGrade()">{{ 'mma.mod_assign.sync' | translate }}</a>
+      <p ng-if="submission.attachments.length == 0 || submission.attachments.length == null">{{ 'mma.mod_assign.noSub' | translate }}</p>
     </ion-content>
 </ion-view>

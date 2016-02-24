@@ -47,6 +47,7 @@ angular.module('mm.addons.grades')
             angular.forEach(assign, function(a) {
               return $mmaModAssign.getSubmissions(a.id, refresh).then(function(data) {
                   a.submission = data;
+                  $scope.submissions = a.submission.submissions;
                   angular.forEach(a.submission.submissions, function(submission, key) {
                       submission.text = $mmaModAssign.getSubmissionText(submission);
                       submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);

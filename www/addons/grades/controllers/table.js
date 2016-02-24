@@ -43,18 +43,18 @@ angular.module('mm.addons.grades')
             $scope.title = assign.name || $scope.title;
             $scope.description = assign.intro || $scope.description;
             $scope.assign = assign;
-            console.log(assign);
             angular.forEach(assign, function(a) {
               return $mmaModAssign.getSubmissions(a.id, refresh).then(function(data) {
-                  a.submission = data;
-                  $scope.submissions = a.submission.submissions;
-                  angular.forEach(a.submission.submissions, function(submission, key) {
-                      submission.text = $mmaModAssign.getSubmissionText(submission);
-                      submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);
-                      if(a.submission.submissions[key].userid == userid) {
-                        a.key = key;
-                        $scope.submission = a;
-                      }
+                  return $mmaModAssign.getSubmissionsUserData(data.submissions, courseid).then(function(submissions) {
+                    a.submissions = submissions;
+                    angular.forEach(submissions, function(submission, key) {
+                        submission.text = $mmaModAssign.getSubmissionText(submission);
+                        submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);
+                        if(a.submissions[key].userid == userid) {
+                          a.key = key;
+                          $scope.submission = a;
+                        }
+                    });
                   });
               });
             });

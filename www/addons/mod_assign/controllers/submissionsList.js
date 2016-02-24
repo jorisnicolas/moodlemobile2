@@ -27,7 +27,6 @@ angular.module('mm.addons.mod_assign')
     $scope.assignid = $stateParams.assignid;
     $scope.isTablet = $ionicPlatform.isTablet();
     $scope.submissions = $stateParams.submissions;
-    console.log($stateParams);
 
     var sortSub = [];
     $stateParams.submissions.forEach(function(submission) {

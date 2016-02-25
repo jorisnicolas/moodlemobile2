@@ -13,5 +13,6 @@
     "send": "Save",
     "sync": "Synchronise",
     "downloadall": "Download All Files",
-    "noSub": "No files submitted"
+    "noSub": "No files submitted",
+    "noContent": "No Submission Available"
 }

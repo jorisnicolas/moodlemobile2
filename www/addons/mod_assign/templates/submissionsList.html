@@ -5,7 +5,11 @@
             <ion-refresher pulling-text="{{ 'mm.core.pulltorefresh' | translate }}">
             </ion-refresher>
             <mm-loading hide-until="submissionsLoaded">
-                <p ng-if="submissions && submissions.length == 0" class="padding">{{ 'mma.mod_assign.noContent' | translate }}</p>
+                <div class="text-center" ng-if="submissions && submissions.length > 0 || !noSubmission">
+                  <a class="button button-icon icon ion-archive" ng-click="downloadAll()"></a>
+                  <a class="button button-icon icon ion-loop" ng-click="addGrade()" ></a>
+                </div>
+                <p ng-if="submissions && submissions.length == 0 || noSubmission" class="padding">{{ 'mma.mod_assign.noContent' | translate }}</p>
                 <ul class="list" ng-if="submissions && submissions.length > 0">
                     <li ng-repeat="sub in submissions">
                         <a ng-if="isTablet" class="item item-avatar item-icon-right"
@@ -13,14 +17,14 @@
                            title="{{sub.userfullname}}">
                             <img ng-src="{{sub.userprofileimageurl}}" alt="">
                             <mm-format-text>{{sub.userfullname}}</mm-format-text>
-                            <i ng-if="sub.attachments.length > 0"class="icon ion-document"></i>
+                            <i ng-if="sub.attachments.length > 0" class="icon ion-document"></i>
                         </a>
                         <a ng-if="!isTablet" class="item item-avatar item-icon-right"
                            mm-split-view-link="site.mod_assign-grading({submissions: submissions, courseid: courseid, assignid: assignid, userid: sub.userid})"
                            title="{{sub.userfullname}}">
                             <img ng-src="{{sub.userprofileimageurl}}" alt="">
                             <mm-format-text>{{sub.userfullname}}</mm-format-text>
-                            <i ng-if="sub.attachments.length > 0"class="icon ion-document"></i>
+                            <i ng-if="sub.attachments.length > 0" class="icon ion-document"></i>
                         </a>
                     </li>
                 </ul>

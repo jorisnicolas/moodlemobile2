@@ -41,7 +41,6 @@ angular.module('mm.addons.mod_assign')
         $scope.title = assign.name || $scope.title;
         $scope.description = assign.intro || $scope.description;
         $scope.assign = assign;
-
         // Get assignment submissions.
         return $mmaModAssign.getSubmissions(assign.id, refresh).then(function(data) {
           $scope.canviewsubmissions = data.canviewsubmissions;

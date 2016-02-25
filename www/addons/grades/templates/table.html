@@ -14,20 +14,14 @@
                         </th>
                     </thead>
                     <tbody>
-                        <tr ui-sref='site.mod_assign-submissionsList({assignid: assign[index].id, courseid: courseid, submissions: assign[index].submissions})' ng-repeat="(index, myrow) in gradesTable.rows" ng-bind-html="myrow"></tr>
+                        <tr ng-bind-html="gradesTable.rows[0]"></tr>
+                        <tr ui-sref='site.mod_assign-submissionsList({assignid: assign[index].id, courseid: courseid, submissions: assign[index].submissions})' ng-repeat="(index, myrow) in gradesTable.rows.slice(1, gradesTable.rows.length -1)" ng-bind-html="myrow"></tr>
+                        <tr ng-bind-html="gradesTable.rows[gradesTable.rows.length - 1]"></tr>
                     </tbody>
                 </table>
             </div>
             <div ng-if="!gradesTable" class="padding">
                 <p>{{errormessage}}</p>
-            </div>
-
-            <div ng-show="!capabilities" class="item item-body" ng-repeat="a in assign">
-                                <a ui-sref="site.mod_assign-submissionsList({assignid: a.id, courseid: courseid, submissions: a.submissions})" class="button button-block button-calm icon-right {{icon}} ">
-                  {{a.name}} - <span ng-if="a.submissions[a.key].attachments.length == 0 || a.submissions[a.key].attachments.length == null">Non rendu</span>
-                               <span ng-if="a.submissions[a.key].attachments.length == 1">{{a.submissions[a.key].attachments.length}} fichier joint</span>
-                               <span ng-if="a.submissions[a.key].attachments.length > 1">{{a.submissions[a.key].attachments.length}} fichiers joints</span>
-                </a>
             </div>
 
         </mm-loading>

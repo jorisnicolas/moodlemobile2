@@ -21,10 +21,10 @@ angular.module('mm.addons.grades')
  * @ngdoc controller
  * @name mmaModAssignSubmissionCtrl
  */
-.controller('mmaAssignGradingCtrl', function($scope, mmaGradingInfo, $stateParams, $mmaModAssign, $ionicPopup, $mmApp) {
+.controller('mmaAssignGradingCtrl', function($scope, $stateParams, $mmaModAssign, $ionicPopup, $mmApp) {
 
     var userid = $stateParams.userid;
-    var assign = $stateParams.assignid;
+    var assignid = $stateParams.assignid;
     var courseid = $stateParams.courseid;
     var submission;
     $stateParams.submissions.forEach(function(sub) {
@@ -59,39 +59,8 @@ angular.module('mm.addons.grades')
     $scope.saveGrade = function(note, comment) {
       $scope.send = true;
       var file = $mmaModAssign.getLocalSubmissionFile(submission);
-      $mmaModAssign.saveGrade(courseid + "_" + userid + "_" + submission.id, userid, note, comment, submission.id, file);
+      $mmaModAssign.saveGrade(courseid + "" + userid + "" + assignid + "" + submission.id, assignid, userid, note, comment, submission.id, file);
       console.log($mmApp.getDB().getAll('grading_info'));
-    };
-
-    $scope.addGrade = function() {
-      var grades = [];
-      var Ids = [];
-      return $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
-          grade.forEach(function(data) {
-              grades[grades.length] = {
-                  userid: data.userid,
-                  grade: data.grade,
-                  attemptnumber: -1,
-                  addattempt: 0,
-                  workflowstate: "",
-                  plugindata: {
-                    assignfeedbackcomments_editor: {
-                      text:  data.comment,
-                      format: 4
-                    },
-                    files_filemanager: data.files_filemanager // itemId
-                  }
-              };
-              Ids[Ids.length] = {
-                uniqueid: data.uniqueId
-              };
-
-              // data.file.forEach(function(attach) {
-              //   $mmaModAssign.uploadFiles(attach, submission.id);
-              // });
-          });
-          $mmaModAssign.addGrade(assign, grades, Ids);
-      });
     };
 
     $scope.showAlert = function() {

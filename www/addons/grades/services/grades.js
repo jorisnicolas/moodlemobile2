@@ -56,7 +56,7 @@ function formatGradesTable(table, showSimple) {
     tabledata = table.tables[0]['tabledata'];
     var l = tabledata.length;
     for(var i=1; i < l-1;i++){
-      if(tabledata[i].itemname.content.indexOf("quiz")=== -1){
+      if(tabledata[i].itemname.content.indexOf("assign")!== -1){
         tabledata[i].itemname.content = "> "+tabledata[i].itemname.content;
       }
     }

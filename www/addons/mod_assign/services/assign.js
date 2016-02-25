@@ -32,6 +32,9 @@ angular.module('mm.addons.mod_assign')
                      name: 'uniqueId',
                  },
                  {
+                     name: 'assignid',
+                 },
+                 {
                      name: 'userid',
                  },
                  {
@@ -242,9 +245,10 @@ angular.module('mm.addons.mod_assign')
      * @param {Array} grades        The grades data
      * @return {Promise}
      */
-    self.saveGrade = function(uniqueId, userid, grade, comment, files_filemanager, file) {
+    self.saveGrade = function(uniqueId, assignid, userid, grade, comment, files_filemanager, file) {
       return $mmApp.getDB().insert(mmaGradingInfo, {
                                                     uniqueId: uniqueId,
+                                                    assignid: assignid,
                                                     userid: userid,
                                                     grade: grade,
                                                     comment: comment,
@@ -314,11 +318,6 @@ angular.module('mm.addons.mod_assign')
       console.log(data);
       return $mmSite.write('core_files_upload', data);
     };
-
-    self.downloadAll = function() {
-      console.log("telechargement");
-    };
-
 
     /**
      * Check if assignments plugin is enabled in a certain site.

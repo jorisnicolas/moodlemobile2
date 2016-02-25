@@ -29,6 +29,7 @@ angular.module('mm.addons.grades')
   function fetchParticipants(refresh) {
     return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {
       var students = [];
+      // Get only the students
       data.forEach(function(participants) {
         if(participants.roles[0].roleid === 5) {
           students[students.length] = participants;
@@ -42,16 +43,6 @@ angular.module('mm.addons.grades')
     });
   }
 
-  function capabilities() {
-    return $mmaGrades.hasCapabilities(courseid).then(function(res) {
-      $scope.capabilities = res;
-    }, function(message) {
-      $mmUtil.showErrorModal(message);
-      $scope.errormessage = message;
-    });
-  }
-
-
   // Get first participants.
   fetchParticipants().then(function() {
     // Add log in Moodle.
@@ -62,22 +53,9 @@ angular.module('mm.addons.grades')
     $scope.participantsLoaded = true;
   });
 
-  capabilities().then(function() {
-    $mmSite.write('core_enrol_get_enrolled_users_with_capability',{
-      courseid: courseid
-    });
-  });
-
   $scope.refreshParticipants = function() {
     fetchParticipants(true).finally(function() {
       $scope.$broadcast('scroll.refreshComplete');
     });
   };
-
-  $scope.loadMoreParticipants = function(){
-    fetchParticipants().finally(function() {
-      $scope.$broadcast('scroll.infiniteScrollComplete');
-    });
-  };
-
 });

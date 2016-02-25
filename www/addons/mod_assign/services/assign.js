@@ -220,6 +220,7 @@ angular.module('mm.addons.mod_assign')
      * @name $mmaGrades#addGrade
      * @param {String} assign       The assignment id.
      * @param {Array} grades        The grades data
+     * @param {Array} Ids           The Unique id for each grade
      * @return {Promise}
      */
     self.addGrade = function(assign, grades, Ids) {
@@ -242,7 +243,13 @@ angular.module('mm.addons.mod_assign')
      * @module mm.addons.grades
      * @ngdoc method
      * @name $mmaGrades#saveGrade
-     * @param {Array} grades        The grades data
+     * @param {String} uniqueId           The unique id of a grade
+     * @param {Number} assignid            The assignement id
+     * @param {Number} userid              The user id
+     * @param {Number} grade               The new grade value
+     * @param {String} comment             The new comment value
+     * @param {Number} files_filemanager   The files_manager id
+     * @param {Object[]} file                The object file
      * @return {Promise}
      */
     self.saveGrade = function(uniqueId, assignid, userid, grade, comment, files_filemanager, file) {
@@ -295,7 +302,7 @@ angular.module('mm.addons.mod_assign')
     };
 
     /**
-     * Upload he local files too moodle
+     * Upload the local files too moodle
      *
      * @module mm.addons.grades
      * @ngdoc method

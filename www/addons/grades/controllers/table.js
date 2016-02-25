@@ -37,11 +37,10 @@ angular.module('mm.addons.grades')
         });
     }
 
+    // Method needed for the data
+    // The data are send, throw the tablegrades, to the new pages for grading
     function fetchAssignment(refresh) {
-        // Get assignment data.
         return $mmaGrades.getAssignment(courseid, refresh).then(function(assign) {
-            $scope.title = assign.name || $scope.title;
-            $scope.description = assign.intro || $scope.description;
             $scope.assign = assign;
             angular.forEach(assign, function(a) {
               return $mmaModAssign.getSubmissions(a.id, refresh).then(function(data) {
@@ -59,40 +58,11 @@ angular.module('mm.addons.grades')
               });
             });
         });
-    }
-
-
-    // function capabilities() {
-    //   return $mmaGrades.hasCapabilities(courseid).then(function(res) {
-    //     $scope.capabilities = true;//res;
-    //   }, function(message) {
-    //     $mmUtil.showErrorModal(message);
-    //     $scope.errormessage = message;
-    //   });
-    // }
-
-    // function isGraded(){
-    //   var icon;
-    //   return $mmApp.getDB().getAll('grading_info').then(function(item){
-    //     item.forEach(function(data){
-    //       icon = "ion-close-round";
-    //         if(data.userid == userid){
-    //           icon = "ion-checkmark-round";
-    //         }
-    //     });
-    //     $scope.icon = icon;
-    //   });
-    // }
+     }
 
     fetchAssignment().finally(function() {
         $scope.assignmentLoaded = true;
     });
-
-    $scope.refreshAssignment = function() {
-        fetchAssignment(true).finally(function() {
-            $scope.$broadcast('scroll.refreshComplete');
-        });
-    };
 
     fetchGrades().then(function() {
         // Add log in Moodle.
@@ -104,12 +74,6 @@ angular.module('mm.addons.grades')
     .finally(function() {
         $scope.gradesLoaded = true;
     });
-
-    /*capabilities().then(function() {
-      $mmSite.write('core_enrol_get_enrolled_users_with_capability',{
-        courseid: courseid
-      });
-    });*/
 
     $scope.refreshGrades = function() {
         fetchGrades(true).finally(function() {

@@ -2,7 +2,7 @@
     <ion-nav-title>{{ title }}</ion-nav-title>
     <ion-content>
 
-      <form ng-submit="saveGrade(grade.note, grade.comment)" name="itemGrade" ng-if="submission.attachments.length > 0">
+      <form ng-submit="saveGrade(grade.note, grade.comment)" name="itemGrade" ng-if="submission.attachments.length > 0" action="/?#/site/mod_assign-submissionsList">
           <div class="item item-text-wrap">
             <span class="input-label">{{ 'mma.mod_assign.grade' | translate }}</span>
             <input style="width:100%" type="text" placeholder="..." ng-model="grade.note">
@@ -28,7 +28,7 @@
               </div>
             </div>
         </div>
-        <button class="button button-full icon-right ion-paper-airplane button-calm" ng-disabled="!grade.note.length || send">
+        <button class="button button-full icon-right ion-paper-airplane button-calm"  ng-disabled="!grade.note.length || send">
           {{ 'mma.mod_assign.send' | translate }}
         </button>
       </form>

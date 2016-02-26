@@ -45,7 +45,6 @@ angular.module('mm.addons.grades')
     // console.log($mmFilepool._getFileIdByUrl(submission.attachments[0].fileurl));
     // console.log($mmApp.getDB());
 
-
     function isSubmissionPluginAvailable() {
       var available = false;
       angular.forEach(submission.plugins, function(plugin) {

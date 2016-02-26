@@ -22,13 +22,12 @@ angular.module('mm.addons.mod_assign')
  * @name mmaModAssignSubmissionCtrl
  */
 
-.controller('mmaAssignSubmissionList', function($scope, $mmWS, $mmSite, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
+.controller('mmaAssignSubmissionList', function($scope, $mmWS, $mmSite, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
     $scope.courseid = $stateParams.courseid;
     $scope.assignid = $stateParams.assignid;
     $scope.isTablet = $ionicPlatform.isTablet();
     $scope.submissions = $stateParams.submissions;
     console.log($mmSite.getDb().getAll('filepool'));
-
     var sortSub = [];
     if($stateParams.submissions !== null) {
       $stateParams.submissions.forEach(function(submission) {
@@ -82,6 +81,7 @@ angular.module('mm.addons.mod_assign')
       sortSub.forEach(function(sub) {
         file = $mmaModAssign.getLocalSubmissionFile(sub);
         file.forEach(function(attachment) {
+          $mmFilepool.addToQueueByUrl($mmSite.getId(), attachment.fileurl, {}, sub.id , 0);
           $mmWS.downloadFile(attachment.fileurl, attachment.localpath, attachment.filename);
         });
       });

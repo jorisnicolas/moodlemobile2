@@ -21,7 +21,7 @@ angular.module('mm.addons.grades')
  * @ngdoc controller
  * @name mmaModAssignSubmissionCtrl
  */
-.controller('mmaAssignGradingCtrl', function($scope, $stateParams, $mmaModAssign, $ionicPopup, $mmApp) {
+.controller('mmaAssignGradingCtrl', function($scope, $state, $stateParams, $mmaModAssign, $ionicPopup, $mmApp) {
 
     var userid = $stateParams.userid;
     var assignid = $stateParams.assignid;
@@ -37,13 +37,6 @@ angular.module('mm.addons.grades')
     $scope.component = $mmaModAssign;
     $scope.isPluginAvailable = isSubmissionPluginAvailable();
     $scope.send = false;
-    // console.log($mmFS.getFile(file)); //get the file
-    // console.log(file);
-    //console.log($mmApp.getDB().getAll(mmaGradingInfo));
-    // console.log($mmFilepool.getFileDownloadId(submission.attachments[0].filepath, submission.attachments[0].fileurl));
-    // console.log($mmFilepool._getFilePath($mmSite.getId(), $mmFilepool._getFileIdByUrl(submission.attachments[0].fileurl)));
-    // console.log($mmFilepool._getFileIdByUrl(submission.attachments[0].fileurl));
-    // console.log($mmApp.getDB());
 
     function isSubmissionPluginAvailable() {
       var available = false;
@@ -59,13 +52,14 @@ angular.module('mm.addons.grades')
       $scope.send = true;
       var file = $mmaModAssign.getLocalSubmissionFile(submission);
       $mmaModAssign.saveGrade(courseid + "" + userid + "" + assignid + "" + submission.id, assignid, userid, note, comment, submission.id, file);
+      $state.go('site.mod_assign-submissionsList', {assignid: assignid, courseid: courseid, submissions: $stateParams.submissions});
       console.log($mmApp.getDB().getAll('grading_info'));
     };
 
-    $scope.showAlert = function() {
+    $scope.showAlert = function(translate) {
       var alertPopup = $ionicPopup.alert({
         title: 'Grade',
-        template: 'Submission as been graded'
+        template: translate
       });
       alertPopup.then(function() {
         console.log('Success grading');

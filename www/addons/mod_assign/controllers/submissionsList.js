@@ -28,9 +28,17 @@ angular.module('mm.addons.mod_assign')
     $scope.isTablet = $ionicPlatform.isTablet();
     $scope.submissions = $stateParams.submissions;
     console.log($mmSite.getDb().getAll('filepool'));
+    console.log($mmApp.getDB().getAll('grading_info'));
     var sortSub = [];
     if($stateParams.submissions !== null) {
       $stateParams.submissions.forEach(function(submission) {
+        $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
+            grade.forEach(function(data) {
+               if(data.userid === submission.userid) {
+                 submission.graded = true;
+               }
+            });
+        });
         if(submission.attachments.length > 0) {
           sortSub.unshift(submission);
         }else {
@@ -41,8 +49,8 @@ angular.module('mm.addons.mod_assign')
     }else {
       $scope.noSubmission = true;
     }
-
     $scope.submissionsLoaded = true;
+
 
     $scope.addGrade = function() {
       var grades = [];
@@ -68,8 +76,8 @@ angular.module('mm.addons.mod_assign')
                 uniqueid: data.uniqueId
               };
               assignid = data.assignid;
-              data.file.forEach(function(attach) {
-                $mmaModAssign.uploadFiles(attach, submission.id);
+              data.file.forEach(function(file) {
+                $mmaModAssign.uploadFiles(file, data.files_filemanager);
               });
           });
           $mmaModAssign.addGrade(assignid, grades, Ids);

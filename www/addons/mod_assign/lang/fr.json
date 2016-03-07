@@ -14,5 +14,6 @@
     "send": "Envoyer",
     "sync": "Tout synchroniser",
     "downloadall": "Tout télécharger",
-    "noSub": "Aucun fichier rendu"
+    "noSub": "Aucun fichier rendu",
+    "hasbeengraded": "La note a été enregistrée"
 }

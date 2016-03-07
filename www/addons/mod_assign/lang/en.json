@@ -14,5 +14,6 @@
     "sync": "Synchronise",
     "downloadall": "Download All Files",
     "noSub": "No files submitted",
-    "noContent": "No Submission Available"
+    "noContent": "No Submission Available",
+    "hasbeengraded": "Submission as been graded"
 }

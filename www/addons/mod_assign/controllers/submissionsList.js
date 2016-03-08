@@ -56,7 +56,7 @@ angular.module('mm.addons.mod_assign')
     $scope.submissionsLoaded = true;
 
     $mmSite.getDb().getAll('filepool').then(function(data){
-        if(data.length === i){
+        if(data.length === i || i === 0){
             $scope.dlDisable = true;
         }else{
             $scope.dlDisable = false;

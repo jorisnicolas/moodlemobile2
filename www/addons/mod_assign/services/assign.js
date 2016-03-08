@@ -223,19 +223,17 @@ angular.module('mm.addons.mod_assign')
      * @param {Array} Ids           The Unique id for each grade
      * @return {Promise}
      */
-    self.addGrade = function(assign, grades, Ids) {
+    self.addGrade = function(assign, grades) {
       var data = {
         assignmentid: assign,
         applytoall: 0,
         grades: grades
       };
       console.log(data);
-      console.log(Ids);
-      console.log($mmApp.getDB());
+      // A METTRE DANS LE "then" lorsque le service marchera
+      $mmApp.getDB().removeAll(mmaGradingInfo);
       return $mmSite.write('mod_assign_save_grades', data).then(function() {
-        Ids.foreach(function(uniqueId) {
-          $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
-        });
+          console.log("deleting database");
       });
     };
 

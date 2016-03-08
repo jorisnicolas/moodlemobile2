@@ -22,20 +22,18 @@ angular.module('mm.addons.mod_assign')
  * @name mmaModAssignSubmissionCtrl
  */
 
-.controller('mmaAssignSubmissionList', function($scope, $mmFS, $mmWS, $mmSite, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
+.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
     $scope.courseid = $stateParams.courseid;
     $scope.assignid = $stateParams.assignid;
     $scope.isTablet = $ionicPlatform.isTablet();
     $scope.submissions = $stateParams.submissions;
     console.log($mmSite.getDb().getAll('filepool'));
     console.log($mmApp.getDB().getAll('grading_info'));
-    $mmApp.getDB().remove(mmaGradingInfo, 222319);
-    console.log($mmApp.getDB().getAll('grading_info'));
-    console.log($mmWS);
     var sortSub = [];
     if($stateParams.submissions !== null) {
       $stateParams.submissions.forEach(function(submission) {
         $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
+            submission.graded = false;
             grade.forEach(function(data) {
                if(data.userid === submission.userid && $stateParams.assignid === data.assignid) {
                  submission.graded = true;
@@ -48,6 +46,7 @@ angular.module('mm.addons.mod_assign')
           sortSub.push(submission);
         }
       });
+      console.log(sortSub);
       $scope.submissions = sortSub;
     }else {
       $scope.noSubmission = true;
@@ -56,7 +55,6 @@ angular.module('mm.addons.mod_assign')
 
     $scope.addGrade = function() {
       var grades = [];
-      var Ids = [];
       var assignid;
       return $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {
@@ -74,17 +72,14 @@ angular.module('mm.addons.mod_assign')
                     files_filemanager: data.files_filemanager // itemId
                   }
               };
-              Ids[Ids.length] = {
-                uniqueid: data.uniqueId
-              };
               assignid = data.assignid;
-              data.file.forEach(function(file) {
-                //console.log($mmFS.readFile(file.localpath));
-                //console.log($mmFS.readFileData($mmFS.readFile(file.localpath)));
-                $mmaModAssign.uploadFiles(file, data.files_filemanager);
-              });
+              // data.file.forEach(function(file) {
+              //   //console.log($mmFS.readFile(file.localpath));
+              //   //console.log($mmFS.readFileData($mmFS.readFile(file.localpath)));
+              //   $mmaModAssign.uploadFiles(file, data.files_filemanager);
+              // });
           });
-          $mmaModAssign.addGrade(assignid, grades, Ids);
+          $mmaModAssign.addGrade(assignid, grades);
       });
     };
 

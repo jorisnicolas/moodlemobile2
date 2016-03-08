@@ -22,7 +22,7 @@ angular.module('mm.addons.mod_assign')
  * @name mmaModAssignSubmissionCtrl
  */
 
-.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
+.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmWS, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
     $scope.courseid = $stateParams.courseid;
     $scope.assignid = $stateParams.assignid;
     $scope.isTablet = $ionicPlatform.isTablet();
@@ -47,7 +47,6 @@ angular.module('mm.addons.mod_assign')
           sortSub.push(submission);
         }
       });
-      console.log(sortSub);
       $scope.submissions = sortSub;
     }else {
       $scope.noSubmission = true;
@@ -74,11 +73,11 @@ angular.module('mm.addons.mod_assign')
                   }
               };
               assignid = data.assignid;
-              // data.file.forEach(function(file) {
-              //   //console.log($mmFS.readFile(file.localpath));
-              //   //console.log($mmFS.readFileData($mmFS.readFile(file.localpath)));
-              //   $mmaModAssign.uploadFiles(file, data.files_filemanager);
-              // });
+              data.file.forEach(function(file) {
+                //console.log($mmFS.readFile(file.localpath));
+                //console.log($mmFS.readFileData($mmFS.readFile(file.localpath)));
+                $mmaModAssign.uploadFiles(file, data.files_filemanager);
+              });
           });
           $mmaModAssign.addGrade(assignid, grades);
       });

@@ -27,8 +27,9 @@ angular.module('mm.addons.mod_assign')
     $scope.assignid = $stateParams.assignid;
     $scope.isTablet = $ionicPlatform.isTablet();
     $scope.submissions = $stateParams.submissions;
-    console.log($mmSite.getDb().getAll('filepool'));
-    console.log($mmApp.getDB().getAll('grading_info'));
+    $mmApp.getDB().getAll('grading_info').then(function(data){
+        $scope.syncEnable = data.length;
+    });
     var sortSub = [];
     if($stateParams.submissions !== null) {
       $stateParams.submissions.forEach(function(submission) {

@@ -29,7 +29,8 @@
             </div>
         </div>
         <button type="submit" class="button button-full icon-right ion-paper-airplane button-calm"
-          ng-disabled="!grade.note.length || send || grade.note > 100">
+          ng-disabled="!grade.note.length || send || grade.note > 100"
+          ng-click="showAlert(mma.mod_assign.hasbeengraded || translate)">
           {{ 'mma.mod_assign.send' | translate }}
         </button>
       </form>

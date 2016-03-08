@@ -57,9 +57,10 @@ angular.module('mm.addons.grades')
     };
 
     $scope.showAlert = function(translate) {
+      var text = translate || "Submission has been graded";
       var alertPopup = $ionicPopup.alert({
         title: 'Grade',
-        template: translate
+        template: text
       });
       alertPopup.then(function() {
         console.log('Success grading');

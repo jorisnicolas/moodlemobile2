@@ -26,10 +26,10 @@ angular.module('mm.addons.mod_assign')
      var stores = [
          {
              name: mmaGradingInfo,
-             keyPath: ['uniqueId'],
+             keyPath: 'id',
              indexes: [
                  {
-                     name: 'uniqueId',
+                     name: 'id',
                  },
                  {
                      name: 'assignid',
@@ -230,12 +230,15 @@ angular.module('mm.addons.mod_assign')
         grades: grades
       };
       console.log(data);
+      console.log(Ids);
+      console.log($mmApp.getDB());
       return $mmSite.write('mod_assign_save_grades', data).then(function() {
         Ids.foreach(function(uniqueId) {
-          return $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
+          $mmApp.getDB().remove(mmaGradingInfo, uniqueId);
         });
       });
     };
+
 
     /**
      * Add a grade to the mmApp bd (grading_info)
@@ -254,7 +257,7 @@ angular.module('mm.addons.mod_assign')
      */
     self.saveGrade = function(uniqueId, assignid, userid, grade, comment, files_filemanager, file) {
       return $mmApp.getDB().insert(mmaGradingInfo, {
-                                                    uniqueId: uniqueId,
+                                                    id: uniqueId,
                                                     assignid: assignid,
                                                     userid: userid,
                                                     grade: grade,
@@ -318,7 +321,7 @@ angular.module('mm.addons.mod_assign')
         itemid: id,
         filepath: file.localpath,
         filename: file.filename,
-        filecontent: "Mettre un truc ici",
+        filecontent: "",
         contextlevel: "user",
         instanceid : $mmSite.getUserId()
       };

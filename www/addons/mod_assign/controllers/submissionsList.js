@@ -22,17 +22,19 @@ angular.module('mm.addons.mod_assign')
  * @name mmaModAssignSubmissionCtrl
  */
 
-.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
+.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmWS, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
     $scope.courseid = $stateParams.courseid;
     $scope.assignid = $stateParams.assignid;
     $scope.isTablet = $ionicPlatform.isTablet();
     $scope.submissions = $stateParams.submissions;
+    var i = 0;
     $mmApp.getDB().getAll('grading_info').then(function(data){
-        $scope.syncEnable = data.length;
+        $scope.syncDisable = data.length;
     });
     var sortSub = [];
     if($stateParams.submissions !== null) {
       $stateParams.submissions.forEach(function(submission) {
+         i += submission.attachments.length;
         $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
             submission.graded = false;
             grade.forEach(function(data) {
@@ -47,12 +49,19 @@ angular.module('mm.addons.mod_assign')
           sortSub.push(submission);
         }
       });
-      console.log(sortSub);
       $scope.submissions = sortSub;
     }else {
       $scope.noSubmission = true;
     }
     $scope.submissionsLoaded = true;
+
+    $mmSite.getDb().getAll('filepool').then(function(data){
+        if(data.length === i){
+            $scope.dlDisable = true;
+        }else{
+            $scope.dlDisable = false;
+        }
+    });
 
     $scope.addGrade = function() {
       var grades = [];

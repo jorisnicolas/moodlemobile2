@@ -7,7 +7,7 @@
             <mm-loading hide-until="submissionsLoaded">
                 <div class="text-center" ng-if="submissions && submissions.length > 0 || !noSubmission">
                   <a class="button button-icon icon ion-archive" ng-click="downloadAll()"></a>
-                  <a class="button button-icon icon ion-loop" ng-click="addGrade()"></a>
+                  <a ng-disabled="syncEnable === 0" class="button button-icon icon ion-loop" ng-click="addGrade()"></a>
                 </div>
                 <p ng-if="submissions && submissions.length == 0 || noSubmission" class="padding">{{ 'mma.mod_assign.noContent' | translate }}</p>
                 <ul class="list" ng-if="submissions && submissions.length > 0">

@@ -2,11 +2,11 @@
     <mm-split-view load-when="submissionsLoaded" >
           <ion-content>
             <!-- ion-refresher needs to be direct child of ion-content to work with native scrolling -->
-            <ion-refresher pulling-text="{{ 'mm.core.pulltorefresh' | translate }}">
-            </ion-refresher>
+            <!-- <ion-refresher pulling-text="{{ 'mm.core.pulltorefresh' | translate }}">
+            </ion-refresher> -->
             <mm-loading hide-until="submissionsLoaded">
                 <div class="text-center" ng-if="submissions && submissions.length > 0 || !noSubmission">
-                  <a ng-disabled="dlDisable"class="button button-icon icon ion-archive" ng-click="downloadAll()"></a>
+                  <a ng-disabled="dlDisable" class="button button-icon icon ion-archive" ng-click="downloadAll()"></a>
                   <a ng-disabled="syncDisable === 0" class="button button-icon icon ion-loop" ng-click="addGrade()"></a>
                 </div>
                 <p ng-if="submissions && submissions.length == 0 || noSubmission" class="padding">{{ 'mma.mod_assign.noContent' | translate }}</p>

@@ -55,7 +55,7 @@ angular.module('mm.addons.mod_assign')
      $mmAppProvider.registerStores(stores);
  })
 
-.factory('$mmaModAssign', function($mmSite, $q, $mmUser, $mmSitesManager, mmaGradingInfo, $mmFilepool, $mmApp) {
+.factory('$mmaModAssign', function($mmSite, $q, $mmFS, $mmUser, $mmSitesManager, mmaGradingInfo, $mmFilepool, $mmApp) {
     var self = {};
 
     /**
@@ -312,19 +312,31 @@ angular.module('mm.addons.mod_assign')
      * @param {Int} id            The itemID
      * @return {Promise}
      */
-    self.uploadFiles = function(file, id) {
-      var data = {
-        component: "user",
-        filearea: "draft",
-        itemid: id,
-        filepath: file.localpath,
-        filename: file.filename,
-        filecontent: "",
-        contextlevel: "user",
-        instanceid : $mmSite.getUserId()
-      };
-      console.log(data);
-      return $mmSite.write('core_files_upload', data);
+    self.uploadFiles = function(fileInfo, id) {
+      var content;
+      $mmSite.getDb().getAll('filepool').then(function(filepool) {
+          filepool.forEach(function(file) {
+            if(file.path === fileInfo.localpath) {
+              $mmFS.readFile(file.path, 1).then(function(encodedfile) {
+                content = encodedfile.split("base64,")[1];
+                var data = {
+                  component: "user",
+                  filearea: "draft",
+                  itemid: id,
+                  filepath: file.path,
+                  filename: fileInfo.filename,
+                  filecontent: content,
+                  contextlevel: "user",
+                  instanceid : $mmSite.getUserId()
+                };
+                console.log(data);
+                return $mmSite.write('core_files_upload', data).then(function(callback) {
+                  console.log(callback);
+                });
+              });
+            }
+          });
+      });
     };
 
     /**

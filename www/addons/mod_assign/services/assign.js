@@ -313,19 +313,17 @@ angular.module('mm.addons.mod_assign')
      * @return {Promise}
      */
     self.uploadFiles = function(fileInfo, id) {
-      var content;
       $mmSite.getDb().getAll('filepool').then(function(filepool) {
           filepool.forEach(function(file) {
             if(file.path === fileInfo.localpath) {
               $mmFS.readFile(file.path, 1).then(function(encodedfile) {
-                content = encodedfile.split("base64,")[1];
                 var data = {
                   component: "user",
                   filearea: "draft",
                   itemid: id,
                   filepath: file.path,
                   filename: fileInfo.filename,
-                  filecontent: content,
+                  filecontent: encodedfile.split("base64,")[1],
                   contextlevel: "user",
                   instanceid : $mmSite.getUserId()
                 };

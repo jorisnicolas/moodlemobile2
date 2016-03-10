@@ -28,13 +28,19 @@ angular.module('mm.addons.mod_assign')
     $scope.isTablet = $ionicPlatform.isTablet();
     $scope.submissions = $stateParams.submissions;
     var i = 0;
+
+    //Disable the synchronisation icon if nothing has to be synchronise
     $mmApp.getDB().getAll('grading_info').then(function(data){
         $scope.syncDisable = data.length;
     });
+
+
     var sortSub = [];
     if($stateParams.submissions !== null) {
       $stateParams.submissions.forEach(function(submission) {
          i += submission.attachments.length;
+
+         // Check if the submission is already graded
         $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
             submission.graded = false;
             grade.forEach(function(data) {
@@ -43,6 +49,7 @@ angular.module('mm.addons.mod_assign')
                }
             });
         });
+        //Sort by attachments
         if(submission.attachments.length > 0) {
           sortSub.unshift(submission);
         }else {
@@ -55,6 +62,7 @@ angular.module('mm.addons.mod_assign')
     }
     $scope.submissionsLoaded = true;
 
+    //Disable the icon downloadAll if everything is downloaded
     $mmSite.getDb().getAll('filepool').then(function(data){
         if(data.length === i || i === 0){
             $scope.dlDisable = true;
@@ -95,9 +103,9 @@ angular.module('mm.addons.mod_assign')
       var file;
       sortSub.forEach(function(sub) {
         file = $mmaModAssign.getLocalSubmissionFile(sub);
-        file.forEach(function(attachment) {
-          $mmFilepool.addToQueueByUrl($mmSite.getId(), attachment.fileurl, {}, sub.id , 0);
-          $mmWS.downloadFile(attachment.fileurl, attachment.localpath, attachment.filename);
+        file.forEach(function(attachment, key) {
+          uKey = sub.id + "" + key;
+          $mmFilepool.addToQueueByUrl($mmSite.getId(), attachment.fileurl, {}, uKey , 0);
         });
       });
     };

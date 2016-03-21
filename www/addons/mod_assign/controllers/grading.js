@@ -65,13 +65,13 @@ angular.module('mm.addons.grades')
       console.log($mmApp.getDB().getAll('grading_info'));
     };
 
-    $scope.showAlert = function(translate) {
+    $scope.showAlert = function(title, message) {
       var alertPopup = $ionicPopup.alert({
-        title: 'Grade',
-        template: translate
+        title: title,
+        template: message
       });
       alertPopup.then(function() {
-        console.log('Success grading');
+        console.log('Success');
       });
     };
 });

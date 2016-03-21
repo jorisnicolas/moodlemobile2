@@ -84,7 +84,14 @@ angular.module('mm.addons.mod_assign')
         $scope.$broadcast('scroll.refreshComplete');
     };
 
-    $scope.addGrade = function() {
+    $scope.addGrade = function(title, message) {
+      var alertPopup = $ionicPopup.alert({
+        title: title,
+        template: message
+      });
+      alertPopup.then(function() {
+        console.log('Success');
+      });
       return $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {
               data.file.forEach(function(file) {
@@ -94,8 +101,15 @@ angular.module('mm.addons.mod_assign')
       });
     };
 
-    $scope.downloadAll = function() {
+    $scope.downloadAll = function(title, message) {
       var file;
+      var alertPopup = $ionicPopup.alert({
+        title: title,
+        template: message
+      });
+      alertPopup.then(function() {
+        console.log('Success');
+      });
       sortSub.forEach(function(sub) {
         file = $mmaModAssign.getLocalSubmissionFile(sub);
         file.forEach(function(attachment, key) {

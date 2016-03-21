@@ -181,19 +181,28 @@ angular.module('mm.core')
 
         var ftOptions = {},
             deferred = $q.defer();
-
+        var filearea = "private";
         ftOptions.fileKey = options.fileKey;
         ftOptions.fileName = options.fileName;
         ftOptions.httpMethod = 'POST';
         ftOptions.mimeType = options.mimeType;
+        console.log(filearea);
+        if(typeof(options.filearea) !== 'undefined') {
+          filearea = options.filearea;
+        }
         ftOptions.params = {
-            token: presets.token
+            token: presets.token,
+            filearea: filearea,
+            itemid: 0
         };
         ftOptions.chunkedMode = false;
         ftOptions.headers = {
             Connection: "close"
         };
-
+        console.log(filearea);
+        console.log(uri);
+        console.log(ftOptions);
+        console.log(presets);
         $log.debug('Initializing upload');
         $cordovaFileTransfer.upload(presets.siteurl + '/webservice/upload.php', uri, ftOptions, true).then(function(success) {
             $log.debug('Successfully uploaded file');

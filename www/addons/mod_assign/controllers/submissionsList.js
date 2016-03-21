@@ -22,58 +22,75 @@ angular.module('mm.addons.mod_assign')
  * @name mmaModAssignSubmissionCtrl
  */
 
-.controller('mmaAssignSubmissionList', function($scope, $mmFS, $mmSitesManager, $mmSite, $mmWS, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
+.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmFS, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
     $scope.courseid = $stateParams.courseid;
     $scope.assignid = $stateParams.assignid;
+    $scope.submissions = [];
     $scope.isTablet = $ionicPlatform.isTablet();
-    $scope.submissions = $stateParams.submissions;
-    var i = 0;
 
-    //Disable the synchronisation icon if nothing has to be synchronise
-    $mmApp.getDB().getAll('grading_info').then(function(data){
-        $scope.syncDisable = data.length;
-    });
+    console.log($mmSite);
+    console.log($stateParams.submissions);
+    console.log($mmFS);
+    console.log($mmFilepool);
 
-
+    var submissions = $stateParams.submissions,
+        assignid    = $stateParams.assignid;
+    var attachmentLength = 0;
     var sortSub = [];
-    if($stateParams.submissions !== null) {
-      $stateParams.submissions.forEach(function(submission) {
-         i += submission.attachments.length;
+    fetchSubmissions();
 
-         // Check if the submission is already graded
-        $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
-            submission.graded = false;
-            grade.forEach(function(data) {
-               if(data.userid === submission.userid && $stateParams.assignid === data.assignid) {
-                 submission.graded = true;
-               }
-            });
-        });
-        //Sort by attachments
-        if(submission.attachments.length > 0) {
-          sortSub.unshift(submission);
-        }else {
-          sortSub.push(submission);
-        }
+
+    function fetchSubmissions() {
+      sortSub = [];
+      //Disable the icon downloadAll if everything is downloaded
+      $mmSite.getDb().getAll('filepool').then(function(data){
+          if(data.length === attachmentLength || attachmentLength === 0){
+              $scope.dlDisable = true;
+          }else{
+              $scope.dlDisable = false;
+          }
       });
-      $scope.submissions = sortSub;
-    }else {
-      $scope.noSubmission = true;
-    }
-    $scope.submissionsLoaded = true;
+      attachmentLength = 0;
+      //Disable the synchronisation icon if nothing has to be synchronise
+      $mmApp.getDB().getAll('grading_info').then(function(data){
+          $scope.syncDisable = data.length;
+      });
 
-    //Disable the icon downloadAll if everything is downloaded
-    $mmSite.getDb().getAll('filepool').then(function(data){
-        if(data.length === i || i === 0){
-            $scope.dlDisable = true;
-        }else{
-            $scope.dlDisable = false;
-        }
-    });
+
+      if(submissions !== null) {
+        submissions.forEach(function(submission) {
+           attachmentLength += submission.attachments.length;
+           // Check if the submission is already graded
+          $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
+              submission.graded = false;
+              grade.forEach(function(data) {
+                 if(data.userid === submission.userid && assignid === data.assignid) {
+                   submission.graded = true;
+                 }
+              });
+          });
+          //Sort by attachments
+          if(submission.attachments.length > 0) {
+            sortSub.unshift(submission);
+          }else {
+            sortSub.push(submission);
+          }
+        });
+        $scope.submissions = sortSub;
+      }else {
+        $scope.noSubmission = true;
+      }
+      $scope.submissionsLoaded = true;
+    }
+
+    $scope.refreshSubmissions = function() {
+        // Missing finally to check if the function is done
+        fetchSubmissions();
+        $scope.$broadcast('scroll.refreshComplete');
+    };
 
     $scope.addGrade = function() {
       var grades = [];
-      var assignid;
       return $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {
               grades[grades.length] = {
@@ -90,9 +107,8 @@ angular.module('mm.addons.mod_assign')
                     files_filemanager: data.files_filemanager
                   }
               };
-              assignid = data.assignid;
               data.file.forEach(function(file) {
-                  $mmaModAssign.uploadFiles(file, data.files_filemanager);
+                  $mmaModAssign.uploadFiles(file, data.files_filemanager, data.id);
               });
           });
           $mmaModAssign.addGrade(assignid, grades);

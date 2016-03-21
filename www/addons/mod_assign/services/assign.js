@@ -44,7 +44,7 @@ angular.module('mm.addons.mod_assign')
                      name: 'comment',
                  },
                  {
-                     name: 'files_filemanager',
+                     name: 'itemid',
                  },
                  {
                      name: 'file',
@@ -55,7 +55,7 @@ angular.module('mm.addons.mod_assign')
      $mmAppProvider.registerStores(stores);
  })
 
-.factory('$mmaModAssign', function($mmSite, $q, $mmFS, $mmUser, $mmSitesManager, mmaGradingInfo, $mmFilepool, $mmApp) {
+.factory('$mmaModAssign', function($mmSite, $q, $mmFS, $mmWS, $mmFilepool, $mmUser, $mmSitesManager, mmaGradingInfo, $mmFilepool, $mmApp) {
     var self = {};
 
     /**
@@ -230,11 +230,8 @@ angular.module('mm.addons.mod_assign')
         grades: grades
       };
       console.log(data);
-      // A METTRE DANS LE "then" lorsque le service marchera
-      $mmApp.getDB().removeAll(mmaGradingInfo);
-      return $mmSite.write('mod_assign_save_grades', data).then(function() {
-          console.log("deleting database");
-      });
+      //$mmApp.getDB().removeAll(mmaGradingInfo);
+      $mmSite.write('mod_assign_save_grades', data);
     };
 
 
@@ -253,14 +250,14 @@ angular.module('mm.addons.mod_assign')
      * @param {Object[]} file                The object file
      * @return {Promise}
      */
-    self.saveGrade = function(uniqueId, assignid, userid, grade, comment, files_filemanager, file) {
+    self.saveGrade = function(uniqueId, assignid, userid, grade, comment, itemid, file) {
       return $mmApp.getDB().insert(mmaGradingInfo, {
                                                     id: uniqueId,
                                                     assignid: assignid,
                                                     userid: userid,
                                                     grade: grade,
                                                     comment: comment,
-                                                    files_filemanager: files_filemanager,
+                                                    files_filemanager: itemid,
                                                     file : file
                                                    }
                                   );
@@ -312,29 +309,59 @@ angular.module('mm.addons.mod_assign')
      * @param {Int} id            The itemID
      * @return {Promise}
      */
-    self.uploadFiles = function(fileInfo, id) {
+    self.uploadFiles = function(fileInfo, itemid, id) {
+
+      var options = [];
+      var presets = [];
+
+      var defered = $q.defer();
+
+      options.fileKey = "file";
+      options.fileName = fileInfo.filename;
+      options.httpMethod = 'POST';
+      options.mimeType = $mmFS.getMimeType(fileInfo.filename.split(".")[1]);
+      options.filearea = "draft";
+      presets.token = $mmSite.getToken();
+      presets.siteurl = $mmSite.getURL();
+      var gradingInfo = $mmApp.getDB().get('grading_info', id);
+
       $mmSite.getDb().getAll('filepool').then(function(filepool) {
           filepool.forEach(function(file) {
             if(file.path === fileInfo.localpath) {
-              $mmFS.readFile(file.path, 1).then(function(encodedfile) {
-                var data = {
-                  component: "user",
-                  filearea: "draft",
-                  itemid: id,
-                  filepath: file.path,
-                  filename: fileInfo.filename,
-                  filecontent: encodedfile.split("base64,")[1],
-                  contextlevel: "user",
-                  instanceid : $mmSite.getUserId()
-                };
-                console.log(data);
-                return $mmSite.write('core_files_upload', data).then(function(callback) {
-                  console.log(callback);
+              $mmFS.getFile($mmFilepool._getFilePath($mmSite.getId(), $mmFilepool._getFileIdByUrl(fileInfo.fileurl))).then(function(fileEntry) {
+                $mmWS.uploadFile($mmFS.getInternalURL(fileEntry), options, presets).then(function(response) {
+                    console.log(response);
+                    console.log(defered.resolve(response));
                 });
               });
             }
           });
       });
+
+
+      // var gradingInfo = $mmApp.getDB().get('grading_info', id);
+      // $mmSite.getDb().getAll('filepool').then(function(filepool) {
+      //     filepool.forEach(function(file) {
+      //       if(file.path === fileInfo.localpath) {
+      //         $mmFS.readFile(file.path, 1).then(function(filecontent) {
+      //           var data = {
+      //             component: "user",
+      //             filearea: "draft",
+      //             itemid: -1,
+      //             filepath: file.path,
+      //             filename: fileInfo.filename,
+      //             filecontent: filecontent.split("base64,")[1],
+      //             contextlevel: "user",
+      //             instanceid : $mmSite.getUserId()
+      //           };
+      //           console.log(data);
+      //           $mmSite.write('core_files_upload', data).then(function(response) {
+      //             $mmApp.getDB().update('grading_info', {itemid: response.itemid}, gradingInfo.id === id);
+      //           });
+      //         });
+      //       }
+      //     });
+      // });
     };
 
     /**

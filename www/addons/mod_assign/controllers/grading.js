@@ -50,8 +50,16 @@ angular.module('mm.addons.grades')
 
     $scope.saveGrade = function(note, comment) {
       $scope.send = true;
+      var itemid = -1;
+      var id = courseid + "" + userid + "" + assignid + "" + submission.id;
+      var gradingInfo = $mmApp.getDB().get('grading_info', id);
       var file = $mmaModAssign.getLocalSubmissionFile(submission);
-      $mmaModAssign.saveGrade(courseid + "" + userid + "" + assignid + "" + submission.id, assignid, userid, note, comment, submission.id, file);
+      gradingInfo.then(function(data) {
+        if(data.files_filemanager !== -1) {
+          itemid = data.files_filemanager;
+        }
+      });
+      $mmaModAssign.saveGrade(id, assignid, userid, note, comment, itemid, file);
       $state.go('site.mod_assign-submissionsList', {assignid: assignid, courseid: courseid, submissions: $stateParams.submissions});
       console.log($mmApp.getDB().getAll('grading_info'));
     };

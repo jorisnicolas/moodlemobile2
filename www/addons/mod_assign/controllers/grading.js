@@ -55,8 +55,9 @@ angular.module('mm.addons.grades')
       var gradingInfo = $mmApp.getDB().get('grading_info', id);
       var file = $mmaModAssign.getLocalSubmissionFile(submission);
       gradingInfo.then(function(data) {
-        if(data.files_filemanager !== -1) {
-          itemid = data.files_filemanager;
+        console.log(data);
+        if(data.itemid <= 0) {
+          itemid = data.itemid;
         }
       });
       $mmaModAssign.saveGrade(id, assignid, userid, note, comment, itemid, file);

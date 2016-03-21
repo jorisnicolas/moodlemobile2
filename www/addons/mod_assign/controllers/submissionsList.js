@@ -28,11 +28,6 @@ angular.module('mm.addons.mod_assign')
     $scope.submissions = [];
     $scope.isTablet = $ionicPlatform.isTablet();
 
-    console.log($mmSite);
-    console.log($stateParams.submissions);
-    console.log($mmFS);
-    console.log($mmFilepool);
-
     var submissions = $stateParams.submissions,
         assignid    = $stateParams.assignid;
     var attachmentLength = 0;
@@ -90,28 +85,12 @@ angular.module('mm.addons.mod_assign')
     };
 
     $scope.addGrade = function() {
-      var grades = [];
       return $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {
-              grades[grades.length] = {
-                  userid: data.userid,
-                  grade: data.grade,
-                  attemptnumber: -1,
-                  addattempt: 0,
-                  workflowstate: "",
-                  plugindata: {
-                    assignfeedbackcomments_editor: {
-                      text:  data.comment,
-                      format: 4
-                    },
-                    files_filemanager: data.files_filemanager
-                  }
-              };
               data.file.forEach(function(file) {
-                  $mmaModAssign.uploadFiles(file, data.files_filemanager, data.id);
+                  $mmaModAssign.uploadFeedback(file, data.id, assignid);
               });
           });
-          $mmaModAssign.addGrade(assignid, grades);
       });
     };
 

@@ -55,7 +55,7 @@ angular.module('mm.addons.mod_assign')
      $mmAppProvider.registerStores(stores);
  })
 
-.factory('$mmaModAssign', function($mmSite, $q, $mmFS, $mmWS, $mmFilepool, $mmUser, $mmSitesManager, mmaGradingInfo, $mmFilepool, $mmApp) {
+.factory('$mmaModAssign', function($mmSite, $mmFS, $q, $mmWS, $mmUser, $mmSitesManager, mmaGradingInfo, $mmFilepool, $mmApp) {
     var self = {};
 
     /**
@@ -212,28 +212,6 @@ angular.module('mm.addons.mod_assign')
         });
     };
 
-    /**
-     * Add the grades from the mmApp bd.
-     *
-     * @module mm.addons.grades
-     * @ngdoc method
-     * @name $mmaGrades#addGrade
-     * @param {String} assign       The assignment id.
-     * @param {Array} grades        The grades data
-     * @param {Array} Ids           The Unique id for each grade
-     * @return {Promise}
-     */
-    self.addGrade = function(assign, grades) {
-      var data = {
-        assignmentid: assign,
-        applytoall: 0,
-        grades: grades
-      };
-      console.log(data);
-      //$mmApp.getDB().removeAll(mmaGradingInfo);
-      $mmSite.write('mod_assign_save_grades', data);
-    };
-
 
     /**
      * Add a grade to the mmApp bd (grading_info)
@@ -241,12 +219,12 @@ angular.module('mm.addons.mod_assign')
      * @module mm.addons.grades
      * @ngdoc method
      * @name $mmaGrades#saveGrade
-     * @param {String} uniqueId           The unique id of a grade
+     * @param {String} uniqueId            The unique id of a grade
      * @param {Number} assignid            The assignement id
      * @param {Number} userid              The user id
      * @param {Number} grade               The new grade value
      * @param {String} comment             The new comment value
-     * @param {Number} files_filemanager   The files_manager id
+     * @param {Number} itemId              The item id
      * @param {Object[]} file                The object file
      * @return {Promise}
      */
@@ -257,7 +235,7 @@ angular.module('mm.addons.mod_assign')
                                                     userid: userid,
                                                     grade: grade,
                                                     comment: comment,
-                                                    files_filemanager: itemid,
+                                                    itemid: itemid,
                                                     file : file
                                                    }
                                   );
@@ -300,21 +278,22 @@ angular.module('mm.addons.mod_assign')
     };
 
     /**
-     * Upload the local files too moodle
+     * Upload a local files too moodle and grade the submission
      *
      * @module mm.addons.grades
      * @ngdoc method
      * @name $mmaGrades#uploadFiles
      * @param {Object} file       The file to upload
-     * @param {Int} id            The itemID
+     * @param {Int} id            The uniqueId
+     * @param {Int} assign        The assignement id
      * @return {Promise}
      */
-    self.uploadFiles = function(fileInfo, itemid, id) {
+    self.uploadFeedback = function(fileInfo, id, assign) {
 
       var options = [];
       var presets = [];
-
-      var defered = $q.defer();
+      var str_itemid;
+      var uri;
 
       options.fileKey = "file";
       options.fileName = fileInfo.filename;
@@ -323,45 +302,56 @@ angular.module('mm.addons.mod_assign')
       options.filearea = "draft";
       presets.token = $mmSite.getToken();
       presets.siteurl = $mmSite.getURL();
-      var gradingInfo = $mmApp.getDB().get('grading_info', id);
 
+      // get downloaded files
       $mmSite.getDb().getAll('filepool').then(function(filepool) {
           filepool.forEach(function(file) {
+            // get the relative file that we want to work on
             if(file.path === fileInfo.localpath) {
+              // get the file entry
               $mmFS.getFile($mmFilepool._getFilePath($mmSite.getId(), $mmFilepool._getFileIdByUrl(fileInfo.fileurl))).then(function(fileEntry) {
-                $mmWS.uploadFile($mmFS.getInternalURL(fileEntry), options, presets).then(function(response) {
-                    console.log(response);
-                    console.log(defered.resolve(response));
+                // get the file uri
+                uri = $mmFS.getInternalURL(fileEntry);
+                // upload the file
+                $mmWS.uploadFile(uri, options, presets).then(function(success) {
+                    // get the success response and extract the itemId
+                    str_itemid = success.response;
+                    str_itemid = parseInt(v.split('itemid":')[1].split(',')[0]);
+                    // get the local database with the grade info
+                    $mmApp.getDB().get('grading_info', id).then(function(gradingInfo) {
+                      // update the local database to add a fonctionnal itemId
+                      $mmApp.getDB().update('grading_info', {itemid: str_itemid}, parseInt(gradingInfo.id) === parseInt(id)).then(function() {
+                        // get the local database updated
+                        $mmApp.getDB().get('grading_info', id).then(function(gradeUpdated) {
+                          // build the object 'data' with the local database
+                          var data = {
+                            assignmentid: assign,
+                            applytoall: 0,
+                            grades: [{
+                                userid: gradeUpdated.userid,
+                                grade: gradeUpdated.grade,
+                                attemptnumber: -1,
+                                addattempt: 0,
+                                workflowstate: "",
+                                plugindata: {
+                                  assignfeedbackcomments_editor: {
+                                    text:  gradeUpdated.comment,
+                                    format: 4
+                                  },
+                                  files_filemanager: gradeUpdated.itemid
+                                }
+                              }]
+                          };
+                          console.log(data);
+                          $mmSite.write('mod_assign_save_grades', data);
+                        });
+                      });
+                    });
                 });
               });
             }
           });
       });
-
-
-      // var gradingInfo = $mmApp.getDB().get('grading_info', id);
-      // $mmSite.getDb().getAll('filepool').then(function(filepool) {
-      //     filepool.forEach(function(file) {
-      //       if(file.path === fileInfo.localpath) {
-      //         $mmFS.readFile(file.path, 1).then(function(filecontent) {
-      //           var data = {
-      //             component: "user",
-      //             filearea: "draft",
-      //             itemid: -1,
-      //             filepath: file.path,
-      //             filename: fileInfo.filename,
-      //             filecontent: filecontent.split("base64,")[1],
-      //             contextlevel: "user",
-      //             instanceid : $mmSite.getUserId()
-      //           };
-      //           console.log(data);
-      //           $mmSite.write('core_files_upload', data).then(function(response) {
-      //             $mmApp.getDB().update('grading_info', {itemid: response.itemid}, gradingInfo.id === id);
-      //           });
-      //         });
-      //       }
-      //     });
-      // });
     };
 
     /**

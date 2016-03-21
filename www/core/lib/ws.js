@@ -186,7 +186,6 @@ angular.module('mm.core')
         ftOptions.fileName = options.fileName;
         ftOptions.httpMethod = 'POST';
         ftOptions.mimeType = options.mimeType;
-        console.log(filearea);
         if(typeof(options.filearea) !== 'undefined') {
           filearea = options.filearea;
         }
@@ -199,10 +198,7 @@ angular.module('mm.core')
         ftOptions.headers = {
             Connection: "close"
         };
-        console.log(filearea);
-        console.log(uri);
-        console.log(ftOptions);
-        console.log(presets);
+
         $log.debug('Initializing upload');
         $cordovaFileTransfer.upload(presets.siteurl + '/webservice/upload.php', uri, ftOptions, true).then(function(success) {
             $log.debug('Successfully uploaded file');

@@ -54,12 +54,6 @@ function formatGradesTable(table, showSimple) {
   // Check columns returned (maybe some of the above).
   if (table.tables && table.tables[0] && table.tables[0]['tabledata']) {
     tabledata = table.tables[0]['tabledata'];
-    var l = tabledata.length;
-    for(var i=1; i < l-1;i++){
-      if(tabledata[i].itemname.content.indexOf("assign")!== -1){
-        tabledata[i].itemname.content = "> "+tabledata[i].itemname.content;
-      }
-    }
     maxDepth = table.tables[0]['maxdepth'];
     for (var el in tabledata) {
       // This is a typical row.

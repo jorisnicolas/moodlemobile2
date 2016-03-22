@@ -3,7 +3,7 @@
     <ion-nav-buttons side="secondary">
         <a class="button button-icon ion-ios-browsers-outline" ng-href="{{assignurl}}" mm-browser></a>
     </ion-nav-buttons>
-    <ion-content padding="true">
+    <ion-content padding="true" mm-state-class>
         <ion-refresher pulling-text="{{ 'mm.core.pulltorefresh' | translate }}" ng-if="assignmentLoaded" on-refresh="refreshAssignment()"></ion-refresher>
         <mm-loading hide-until="assignmentLoaded">
             <mm-course-mod-description description="description" watch="true"></mm-course-mod-description>
@@ -17,12 +17,6 @@
                 <p ng-if="assign.duedate" >{{ assign.duedate * 1000 | mmFormatDate:"dfmediumdate" }}</p>
                 <p ng-if="!assign.duedate" >{{ 'mma.mod_assign.duedateno' | translate }}</p>
             </div>
-            <!--Added code -->
-            <div class="text-center" ng-if="canviewsubmissions">
-              <a ui-sref="site.mod_assign-submissionsList({assignid: assign.id, courseid: courseid, submissions: submissions})"
-                 class="button button-icon icon ion-edit"></a>
-            </div>
-            <!-- END -->
             <div ng-if="assign.cutoffdate" class="item item-text-wrap">
                 <h2>{{ 'mma.mod_assign.cutoffdate' | translate }}</h2>
                 <p>{{ assign.cutoffdate * 1000 | mmFormatDate:"dfmediumdate" }}</p>

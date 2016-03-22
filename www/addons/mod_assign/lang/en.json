@@ -7,13 +7,5 @@
     "duedateno": "No due date",
     "submissions": "Submissions",
     "userwithid": "User with Id {{id}}",
-    "viewsubmission": "View submission",
-    "grade": "Grade",
-    "comment": "Comment",
-    "send": "Save",
-    "sync": "Synchronise",
-    "downloadall": "Download All Files",
-    "noSub": "No files submitted",
-    "noContent": "No Submission Available",
-    "hasbeengraded": "Submission as been graded"
+    "viewsubmission": "View submission"
 }

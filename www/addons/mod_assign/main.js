@@ -16,7 +16,6 @@ angular.module('mm.addons.mod_assign', ['mm.core'])
 
 .constant('mmaModAssignComponent', 'mmaModAssign')
 .constant('mmaModAssignSubmissionComponent', 'mmaModAssignSubmission')
-.constant('mmaGradingInfo', 'grading_info')
 
 .config(function($stateProvider) {
 
@@ -35,6 +34,7 @@ angular.module('mm.addons.mod_assign', ['mm.core'])
             }
         }
     })
+
     .state('site.mod_assign-submission', {
         url: '/mod_assign-submission',
         params: {
@@ -46,37 +46,7 @@ angular.module('mm.addons.mod_assign', ['mm.core'])
                 templateUrl: 'addons/mod_assign/templates/submission.html'
             }
         }
-     })
-    .state('site.mod_assign-submissionsList', {
-        url: '/mod_assign-submissionsList',
-        views: {
-            'site': {
-                templateUrl: 'addons/mod_assign/templates/submissionsList.html',
-                controller: 'mmaAssignSubmissionList'
-            }
-        },
-        params: {
-            assignid: null,
-            courseid: null,
-            submissions: null
-        }
-    })
-    .state('site.mod_assign-grading', {
-        url: '/mod_assign-grading',
-        views: {
-            'site': {
-                templateUrl: 'addons/mod_assign/templates/gradeSubmission.html',
-                controller: 'mmaAssignGradingCtrl'
-            }
-        },
-        params: {
-          assignid: null,
-          courseid: null,
-          submissions: null,
-          userid: null
-        }
-    })
-    ;
+    });
 
 })
 

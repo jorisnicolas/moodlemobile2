@@ -21,12 +21,11 @@ angular.module('mm.addons.grades')
  * @ngdoc controller
  * @name mmaGradesTableCtrl
  */
-.controller('mmaGradesTableCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite, $mmaModAssign) {
+.controller('mmaGradesTableCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite) {
 
-    var courseid = $stateParams.courseid,
-        userid = $stateParams.userid;
-    $scope.courseid = courseid;
-    $scope.userid = userid;
+    var course = $stateParams.course || {},
+        courseid = course.id,
+        userid = $stateParams.userid || $mmSite.getUserId();
 
     function fetchGrades(refresh) {
         return $mmaGrades.getGradesTable(courseid, userid, refresh).then(function(table) {
@@ -36,34 +35,6 @@ angular.module('mm.addons.grades')
             $scope.errormessage = message;
         });
     }
-
-    // Method needed for the data
-    // The data are send, throw the tablegrades, to the new pages for grading
-    function fetchAssignment(refresh) {
-        return $mmaGrades.getAssignment(courseid, refresh).then(function(assign) {
-            $scope.assign = assign;
-            angular.forEach(assign, function(a) {
-              return $mmaModAssign.getSubmissions(a.id, refresh).then(function(data) {
-                  return $mmaModAssign.getSubmissionsUserData(data.submissions, courseid).then(function(submissions) {
-                    a.submissions = submissions;
-                    angular.forEach(submissions, function(submission, key) {
-                        submission.text = $mmaModAssign.getSubmissionText(submission);
-                        submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);
-                        if(a.submissions[key].userid == userid) {
-                          a.key = key;
-                          $scope.submission = a;
-                        }
-                    });
-                  });
-              });
-            });
-        });
-     }
-
-    fetchAssignment().finally(function() {
-        $scope.assignmentLoaded = true;
-    });
-
     fetchGrades().then(function() {
         // Add log in Moodle.
         $mmSite.write('gradereport_user_view_grade_report', {

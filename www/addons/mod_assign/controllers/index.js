@@ -15,19 +15,17 @@
 angular.module('mm.addons.mod_assign')
 
 /**
-* Assign index controller.
-*
-* @module mm.addons.mod_assign
-* @ngdoc controller
-* @name mmaModAssignIndexCtrl
-*/
+ * Assign index controller.
+ *
+ * @module mm.addons.mod_assign
+ * @ngdoc controller
+ * @name mmaModAssignIndexCtrl
+ */
 .controller('mmaModAssignIndexCtrl', function($scope, $stateParams, $mmaModAssign, $mmUtil, $translate,
-  mmaModAssignComponent, mmaModAssignSubmissionComponent) {
-
+        mmaModAssignComponent, mmaModAssignSubmissionComponent) {
     var module = $stateParams.module || {},
-    courseid = $stateParams.courseid;
+        courseid = $stateParams.courseid;
 
-    $scope.module = module;
     $scope.title = module.name;
     $scope.description = module.description;
     $scope.assigncomponent = mmaModAssignComponent;
@@ -36,52 +34,53 @@ angular.module('mm.addons.mod_assign')
     $scope.courseid = courseid;
 
     function fetchAssignment(refresh) {
-      // Get assignment data.
-      return $mmaModAssign.getAssignment(courseid, module.id, refresh).then(function(assign) {
-        $scope.title = assign.name || $scope.title;
-        $scope.description = assign.intro || $scope.description;
-        $scope.assign = assign;
-        // Get assignment submissions.
-        return $mmaModAssign.getSubmissions(assign.id, refresh).then(function(data) {
-          $scope.canviewsubmissions = data.canviewsubmissions;
+        // Get assignment data.
+        return $mmaModAssign.getAssignment(courseid, module.id, refresh).then(function(assign) {
+            $scope.title = assign.name || $scope.title;
+            $scope.description = assign.intro || $scope.description;
+            $scope.assign = assign;
 
-          if (data.canviewsubmissions) {
-            // We want to show the user data on each submission.
-            return $mmaModAssign.getSubmissionsUserData(data.submissions, courseid).then(function(submissions) {
-              angular.forEach(submissions, function(submission) {
-                submission.text = $mmaModAssign.getSubmissionText(submission);
-                submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);
-              });
-              $scope.submissions = submissions;
+            // Get assignment submissions.
+            return $mmaModAssign.getSubmissions(assign.id, refresh).then(function(data) {
+                $scope.canviewsubmissions = data.canviewsubmissions;
+
+                if (data.canviewsubmissions) {
+                    // We want to show the user data on each submission.
+                    return $mmaModAssign.getSubmissionsUserData(data.submissions, courseid).then(function(submissions) {
+                        angular.forEach(submissions, function(submission) {
+                            submission.text = $mmaModAssign.getSubmissionText(submission);
+                            submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);
+                        });
+                        $scope.submissions = submissions;
+                    });
+                }
+            }, function() {
+                if (error) {
+                    $mmUtil.showErrorModal(error);
+                } else {
+                    $translate('mm.core.error').then(function(error) {
+                        $mmUtil.showErrorModal(error + ': get_assignment_submissions');
+                    });
+                }
             });
-          }
-        }, function() {
-          if (error) {
-            $mmUtil.showErrorModal(error);
-          } else {
-            $translate('mm.core.error').then(function(error) {
-              $mmUtil.showErrorModal(error + ': get_assignment_submissions');
-            });
-          }
+        }, function(error) {
+            if (error) {
+                $mmUtil.showErrorModal(error);
+            } else {
+                $translate('mm.core.error').then(function(error) {
+                    $mmUtil.showErrorModal(error + ': get_assignment');
+                });
+            }
         });
-      }, function(error) {
-        if (error) {
-          $mmUtil.showErrorModal(error);
-        } else {
-          $translate('mm.core.error').then(function(error) {
-            $mmUtil.showErrorModal(error + ': get_assignment');
-          });
-        }
-      });
     }
 
     fetchAssignment().finally(function() {
-      $scope.assignmentLoaded = true;
+        $scope.assignmentLoaded = true;
     });
 
     $scope.refreshAssignment = function() {
-      fetchAssignment(true).finally(function() {
-        $scope.$broadcast('scroll.refreshComplete');
-      });
+        fetchAssignment(true).finally(function() {
+            $scope.$broadcast('scroll.refreshComplete');
+        });
     };
-  });
+});

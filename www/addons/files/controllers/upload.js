@@ -31,6 +31,7 @@ angular.module('mm.addons.files')
         },
         path = $stateParams.path,
         root = $stateParams.root;
+
     $scope.isAndroid = ionic.Platform.isAndroid();
 
     // Function called when a file is uploaded.

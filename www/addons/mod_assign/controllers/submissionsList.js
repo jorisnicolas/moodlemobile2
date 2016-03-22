@@ -22,7 +22,7 @@ angular.module('mm.addons.mod_assign')
  * @name mmaModAssignSubmissionCtrl
  */
 
-.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmFS, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
+.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmFilepool, $ionicPopup, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
     $scope.courseid = $stateParams.courseid;
     $scope.assignid = $stateParams.assignid;
     $scope.submissions = [];
@@ -48,7 +48,15 @@ angular.module('mm.addons.mod_assign')
       attachmentLength = 0;
       //Disable the synchronisation icon if nothing has to be synchronise
       $mmApp.getDB().getAll('grading_info').then(function(data){
-          $scope.syncDisable = data.length;
+        $scope.syncDisable = true;
+        if(data.length === 0) {
+          $scope.syncDisable = true;
+        }
+        data.forEach(function(result) {
+          if (result.submit === false) {
+            $scope.syncDisable = false;
+          }
+        });
       });
 
 
@@ -90,9 +98,9 @@ angular.module('mm.addons.mod_assign')
         template: message
       });
       alertPopup.then(function() {
-        console.log('Success');
+        console.log('Success download');
       });
-      return $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
+      $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {
               data.file.forEach(function(file) {
                   $mmaModAssign.uploadFeedback(file, data.id, assignid);
@@ -108,7 +116,7 @@ angular.module('mm.addons.mod_assign')
         template: message
       });
       alertPopup.then(function() {
-        console.log('Success');
+        console.log('Success download');
       });
       sortSub.forEach(function(sub) {
         file = $mmaModAssign.getLocalSubmissionFile(sub);

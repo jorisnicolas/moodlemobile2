@@ -48,6 +48,9 @@ angular.module('mm.addons.mod_assign')
                  },
                  {
                      name: 'file',
+                 },
+                 {
+                     name: 'submit',
                  }
              ]
          }
@@ -236,7 +239,8 @@ angular.module('mm.addons.mod_assign')
                                                     grade: grade,
                                                     comment: comment,
                                                     itemid: itemid,
-                                                    file : file
+                                                    file : file,
+                                                    submit : false
                                                    }
                                   );
     };
@@ -316,14 +320,15 @@ angular.module('mm.addons.mod_assign')
                 $mmWS.uploadFile(uri, options, presets).then(function(success) {
                     // get the success response and extract the itemId
                     str_itemid = success.response;
-                    str_itemid = parseInt(v.split('itemid":')[1].split(',')[0]);
+                    str_itemid = parseInt(str_itemid.split('itemid":')[1].split(',')[0]);
                     // get the local database with the grade info
                     $mmApp.getDB().get('grading_info', id).then(function(gradingInfo) {
                       // update the local database to add a fonctionnal itemId
-                      $mmApp.getDB().update('grading_info', {itemid: str_itemid}, parseInt(gradingInfo.id) === parseInt(id)).then(function() {
+                      $mmApp.getDB().update('grading_info', {itemid: str_itemid, submit: true}, parseInt(gradingInfo.id) === parseInt(id)).then(function() {
                         // get the local database updated
                         $mmApp.getDB().get('grading_info', id).then(function(gradeUpdated) {
                           // build the object 'data' with the local database
+                          console.log(gradeUpdated);
                           var data = {
                             assignmentid: assign,
                             applytoall: 0,

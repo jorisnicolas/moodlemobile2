@@ -94,7 +94,7 @@ angular.module('mm.core.login', [])
 })
 
 .run(function($log, $state, $mmUtil, $translate, $mmSitesManager, $rootScope, $mmSite, $mmURLDelegate, $ionicHistory,
-                $mmEvents, $mmLoginHelper, mmCoreEventSessionExpired, $mmApp) {
+                $mmEvents, $mmLoginHelper, mmCoreEventSessionExpired, $mmApp, mmCoreConfigConstants) {
 
     $log = $log.getInstance('mmLogin');
 
@@ -178,12 +178,13 @@ angular.module('mm.core.login', [])
 
     // Function to handle URL received by Custom URL Scheme. If it's a SSO login, perform authentication.
     function appLaunchedByURL(url) {
-        var ssoScheme = 'moodlemobile://token=';
+        var ssoScheme = mmCoreConfigConstants.customurlscheme + '://token=';
         if (url.indexOf(ssoScheme) == -1) {
             return false;
         }
 
         // App opened using custom URL scheme. Probably an SSO authentication.
+        $mmLoginHelper.setSSOLoginOngoing(true);
         $log.debug('App launched by URL');
 
         var modal = $mmUtil.showModalLoading('mm.login.authenticating', true);
@@ -201,19 +202,17 @@ angular.module('mm.core.login', [])
 
         $mmLoginHelper.validateBrowserSSOLogin(url).then(function(sitedata) {
 
-            $mmLoginHelper.handleSSOLoginAuthentication(sitedata.siteurl, sitedata.token).then(function() {
+            return $mmLoginHelper.handleSSOLoginAuthentication(sitedata.siteurl, sitedata.token).then(function() {
                 return $mmLoginHelper.goToSiteInitialPage();
-            }, function(error) {
-                $mmUtil.showErrorModal(error);
-            }).finally(function() {
-                modal.dismiss();
             });
 
-        }, function(errorMessage) {
-            modal.dismiss();
-            if (typeof(errorMessage) === 'string' && errorMessage != '') {
+        }).catch(function(errorMessage) {
+            if (typeof errorMessage === 'string' && errorMessage !== '') {
                 $mmUtil.showErrorModal(errorMessage);
             }
+        }).finally(function() {
+            modal.dismiss();
+            $mmLoginHelper.setSSOLoginOngoing(false);
         });
 
         return true;

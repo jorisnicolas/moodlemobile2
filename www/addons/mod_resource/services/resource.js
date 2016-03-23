@@ -45,7 +45,7 @@ angular.module('mm.addons.mod_resource')
 
         if (self.isDisplayedInIframe(module)) {
             // Get path of the module folder in filepool.
-            promise = $mmFilepool.getFilePathByUrl(siteid, module.url);
+            promise = $mmFilepool.getPackageDirPathByUrl(siteid, module.url);
         } else {
             promise = $q.when();
         }
@@ -153,7 +153,7 @@ angular.module('mm.addons.mod_resource')
             mainFilePath = mainFile.filepath.substr(1) + mainFilePath;
         }
 
-        return $mmFilepool.getDirectoryUrlByUrl($mmSite.getId(), module.url).then(function(dirPath) {
+        return $mmFilepool.getPackageDirUrlByUrl($mmSite.getId(), module.url).then(function(dirPath) {
             // This URL is going to be injected in an iframe, we need trustAsResourceUrl to make it work in a browser.
             return $sce.trustAsResourceUrl($mmFS.concatenatePaths(dirPath, mainFilePath));
         }, function() {
@@ -176,6 +176,9 @@ angular.module('mm.addons.mod_resource')
      * @param {Number} moduleId The module ID.
      * @param {String} [target] The HTML file that the user wants to open, if not defined uses the main file.
      * @return {Promise}
+     *
+     * @deprecated since version 2.10
+     * This function was used to show resources inline
      */
     self.getResourceHtml = function(contents, moduleId, target) {
         var indexUrl,
@@ -227,30 +230,13 @@ angular.module('mm.addons.mod_resource')
                 } else {
                     // Now that we have the content, we update the SRC to point back to
                     // the external resource. That will be caught by mm-format-text.
-                    var html = angular.element('<div>');
-                        html.append(response.data);
-
-                    angular.forEach(html.find('img'), function(img) {
-                        var src = paths[decodeURIComponent(img.getAttribute('src'))];
-                        if (typeof src !== 'undefined') {
-                            img.setAttribute('src', src);
+                    return $mmUtil.restoreSourcesInHtml(response.data, paths, function(anchor, href) {
+                        var ext = $mmFS.getFileExtension(href);
+                        if (ext == 'html' || ext == 'html') {
+                            anchor.setAttribute('mma-mod-resource-html-link', 1);
+                            anchor.setAttribute('data-href', href);
                         }
                     });
-                    // We do the same for links.
-                    angular.forEach(html.find('a'), function(anchor) {
-                        var href = decodeURIComponent(anchor.getAttribute('href')),
-                            url = paths[href],
-                            ext = $mmFS.getFileExtension(href);
-                        if (typeof url !== 'undefined') {
-                            anchor.setAttribute('href', url);
-                            if (ext == 'html' || ext == 'html') {
-                                anchor.setAttribute('mma-mod-resource-html-link', 1);
-                                anchor.setAttribute('data-href', href);
-                            }
-                        }
-                    });
-
-                    return html.html();
                 }
             });
         });
@@ -279,18 +265,12 @@ angular.module('mm.addons.mod_resource')
      * @return {Boolean}
      */
     self.isDisplayedInIframe = function(module) {
-        var inline = self.isDisplayedInline(module);
-
-        if (inline && $mmFS.isAvailable()) {
-            for (var i = 0; i < module.contents.length; i++) {
-                var ext = $mmFS.getFileExtension(module.contents[i].filename);
-                if (ext == 'js' || ext == 'swf' || ext == 'css') {
-                    return true;
-                }
-            }
+        if (!module.contents.length) {
+            return false;
         }
+        var ext = $mmFS.getFileExtension(module.contents[0].filename);
 
-        return false;
+        return (ext === 'htm' || ext === 'html') && $mmFS.isAvailable();
     };
 
     /**
@@ -301,13 +281,11 @@ angular.module('mm.addons.mod_resource')
      * @name $mmaModResource#isDisplayedInline
      * @param {Object} module The module object.
      * @return {Boolean}
+     *
+     * @deprecated since version 2.10
      */
     self.isDisplayedInline = function(module) {
-        if (!module.contents.length) {
-            return false;
-        }
-        var ext = $mmFS.getFileExtension(module.contents[0].filename);
-        return ext === 'htm' || ext === 'html';
+        return self.isDisplayedInIframe(module);
     };
 
     /**
@@ -413,7 +391,7 @@ angular.module('mm.addons.mod_resource')
 
         if (self.isDisplayedInIframe(module)) {
             // Get path of the module folder in filepool.
-            promise = $mmFilepool.getFilePathByUrl(siteid, module.url);
+            promise = $mmFilepool.getPackageDirPathByUrl(siteid, module.url);
         } else {
             promise = $q.when();
         }

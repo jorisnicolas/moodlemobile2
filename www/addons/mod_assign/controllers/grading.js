@@ -55,14 +55,12 @@ angular.module('mm.addons.grades')
       var gradingInfo = $mmApp.getDB().get('grading_info', id);
       var file = $mmaModAssign.getLocalSubmissionFile(submission);
       gradingInfo.then(function(data) {
-        console.log(data);
         if(data.itemid <= 0) {
           itemid = data.itemid;
         }
       });
       $mmaModAssign.saveGrade(id, assignid, userid, note, comment, itemid, file);
       $state.go('site.mod_assign-submissionsList', {assignid: assignid, courseid: courseid, submissions: $stateParams.submissions});
-      console.log($mmApp.getDB().getAll('grading_info'));
     };
 
     $scope.showAlert = function(title, message) {

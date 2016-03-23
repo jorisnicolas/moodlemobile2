@@ -328,7 +328,6 @@ angular.module('mm.addons.mod_assign')
                         // get the local database updated
                         $mmApp.getDB().get('grading_info', id).then(function(gradeUpdated) {
                           // build the object 'data' with the local database
-                          console.log(gradeUpdated);
                           var data = {
                             assignmentid: assign,
                             applytoall: 0,
@@ -347,7 +346,6 @@ angular.module('mm.addons.mod_assign')
                                 }
                               }]
                           };
-                          console.log(data);
                           $mmSite.write('mod_assign_save_grades', data);
                         });
                       });

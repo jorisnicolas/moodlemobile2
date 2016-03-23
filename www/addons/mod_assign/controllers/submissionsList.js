@@ -113,18 +113,19 @@ angular.module('mm.addons.mod_assign')
     $scope.addGrade = function(title, message) {
       $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {
+            if(data.submit === false) {
               data.file.forEach(function(file) {
-                  $mmaModAssign.uploadFeedback(file, data.id, assignid).then(function() {
-                    var alertPopup = $ionicPopup.alert({
-                      title: title,
-                      template: message
-                    });
-                    alertPopup.then(function() {
-                      console.log('Success download');
-                    });
-                  });
+                  $mmaModAssign.uploadFeedback(file, data.id, assignid);
               });
+            }
           });
+      });
+      var alertPopup = $ionicPopup.alert({
+        title: title,
+        template: message
+      });
+      alertPopup.then(function() {
+        console.log('Success upload and grade');
       });
     };
 

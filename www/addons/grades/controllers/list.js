@@ -25,6 +25,7 @@ angular.module('mm.addons.grades')
   var course = $stateParams.course,
   courseid = course.id;
   $scope.courseid = courseid;
+  capabilities();
 
   function fetchParticipants(refresh) {
     return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {
@@ -42,6 +43,17 @@ angular.module('mm.addons.grades')
       $scope.canLoadMore = false;
     });
   }
+
+  //Get participant capability
+  function capabilities() {
+  return $mmaGrades.hasCapabilities(courseid).then(function(res) {
+    console.log(res);
+    $scope.capabilities = res;
+  }, function(message) {
+    $mmUtil.showErrorModal(message);
+    $scope.errormessage = message;
+  });
+}
 
   // Get first participants.
   fetchParticipants().then(function() {

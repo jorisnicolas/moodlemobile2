@@ -16,7 +16,8 @@
                     <tbody>
                         <!-- make the assignement clickable -->
                         <tr ng-bind-html="gradesTable.rows[0]"></tr>
-                        <tr ui-sref='site.mod_assign-submissionsList({assignid: assign[index].id, courseid: courseid, submissions: assign[index].submissions})' ng-repeat="(index, myrow) in gradesTable.rows.slice(1, gradesTable.rows.length -1)" ng-bind-html="myrow"></tr>
+                        <tr ng-if="capabilities" ui-sref='site.mod_assign-submissionsList({assignid: assign[index].id, courseid: courseid, submissions: assign[index].submissions})' ng-repeat="(index, myrow) in gradesTable.rows.slice(1, gradesTable.rows.length -1)" ng-bind-html="myrow"></tr>
+                        <tr ng-if="!capabilities" ng-repeat="(index, myrow) in gradesTable.rows.slice(1, gradesTable.rows.length -1)" ng-bind-html="myrow"></tr>
                         <tr ng-bind-html="gradesTable.rows[gradesTable.rows.length - 1]"></tr>
                     </tbody>
                 </table>

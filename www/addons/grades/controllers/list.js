@@ -24,6 +24,7 @@ angular.module('mm.addons.grades')
 .controller('mmaGradesListCtrl', function($scope, $stateParams, $mmUtil, $mmaGrades, $mmSite) {
   var course = $stateParams.course,
   courseid = course.id;
+  var capabilitie;
   $scope.courseid = courseid;
   capabilities();
 
@@ -31,13 +32,20 @@ angular.module('mm.addons.grades')
     return $mmaGrades.getParticipants(courseid, refresh).then(function(data) {
       var students = [];
       // Get only the students
-      data.forEach(function(participants) {
-        if(participants.roles[0].roleid === 5) {
-          students[students.length] = participants;
-        }
-      });
+      if(capabilitie) {
+        data.forEach(function(participants) {
+          if(participants.roles[0].roleid === 5) {
+            students[students.length] = participants;
+          }
+        });
+      }else {
+        data.forEach(function(participant) {
+          if(participant.id === $mmSite.getUserId()) {
+            students[students.length] = participant;
+          }
+        });
+      }
       $scope.participants = students;
-      $scope.canLoadMore = true;
     }, function(message) {
       $mmUtil.showErrorModal(message);
       $scope.canLoadMore = false;
@@ -46,18 +54,15 @@ angular.module('mm.addons.grades')
 
   //Get participant capability
   function capabilities() {
-  return $mmaGrades.hasCapabilities(courseid).then(function(res) {
-    console.log(res);
-    $scope.capabilities = res;
-  }, function(message) {
-    $mmUtil.showErrorModal(message);
-    $scope.errormessage = message;
-  });
-}
+    return $mmaGrades.hasCapabilities(courseid).then(function(res) {
+      capabilitie = res;
+      $scope.capabilities = res;
+    }, function() {
+      capabilitie = false;
+    });
+  }
 
-  // Get first participants.
   fetchParticipants().then(function() {
-    // Add log in Moodle.
     $mmSite.write('core_user_view_user_list', {
       courseid: courseid
     });

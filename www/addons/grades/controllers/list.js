@@ -26,6 +26,7 @@ angular.module('mm.addons.grades')
   courseid = course.id;
   var capabilitie;
   $scope.courseid = courseid;
+
   capabilities();
 
   function fetchParticipants(refresh) {

@@ -110,7 +110,7 @@ angular.module('mm.addons.mod_assign')
         var files = [];
         if (submission.plugins) {
             submission.plugins.forEach(function(plugin) {
-                if (plugin.type === 'file' && plugin.fileareas && plugin.fileareas[0] && plugin.fileareas[0].files) {
+                if (plugin.type.substr(0,4) === 'file' && plugin.fileareas && plugin.fileareas[0] && plugin.fileareas[0].files) {
                     files = plugin.fileareas[0].files;
                     angular.forEach(files, function(file) {
                         file.filename = file.filepath;

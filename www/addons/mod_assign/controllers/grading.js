@@ -27,6 +27,7 @@ angular.module('mm.addons.grades')
     var assignid = $stateParams.assignid;
     var courseid = $stateParams.courseid;
     var submission;
+    $scope.str = {};
     $stateParams.submissions.forEach(function(sub) {
       if(userid === sub.userid) {
         submission = sub;
@@ -35,7 +36,7 @@ angular.module('mm.addons.grades')
 
     if(submission.graded === true) {
       $scope.grade = submission.gradeData.grade;
-      $scope.comment = submission.gradeData.comment;
+      $scope.str.comment = submission.gradeData.comment;
     }
 
     $scope.title = submission.userfullname;
@@ -54,7 +55,7 @@ angular.module('mm.addons.grades')
       return available;
     }
 
-    $scope.saveGrade = function(note, comment) {
+    $scope.saveGrade = function(grade, comment) {
       $scope.send = true;
       var itemid = -1;
       var id = courseid + "" + userid + "" + assignid + "" + submission.id;
@@ -65,8 +66,8 @@ angular.module('mm.addons.grades')
           itemid = data.itemid;
         }
       });
-      $mmaModAssign.saveGrade(id, assignid, userid, note, comment, itemid, file);
-      submission.gradeData = {grade : note, comment : comment};
+      $mmaModAssign.saveGrade(id, assignid, userid, grade, comment, itemid, file);
+      submission.gradeData = {grade : grade, comment : comment};
       $state.go('site.mod_assign-submissionsList', {assignid: assignid, courseid: courseid, submissions: $stateParams.submissions});
     };
 

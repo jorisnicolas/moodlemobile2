@@ -2,7 +2,7 @@
     <ion-nav-title>{{ title }}</ion-nav-title>
     <ion-content>
 
-      <form ng-submit="saveGrade(grade, comment)" name="itemGrade" ng-if="submission.attachments.length > 0">
+      <form ng-submit="saveGrade(grade, str.comment)" name="itemGrade" ng-if="submission.attachments.length > 0">
           <div class="item item-text-wrap">
             <span class="input-label">{{ 'mma.mod_assign.grade' | translate }}</span>
             <input style="width:100%" type="text"
@@ -10,8 +10,7 @@
           </div>
           <div class="item item-text-wrap" ng-if="isPluginAvailable">
             <span class="input-label">{{ 'mma.mod_assign.comment' | translate }}</span>
-            <textarea style="width:100%" rows="10"
-                placeholder="..." ng-model="comment">
+            <textarea ng-model="str.comment" style="width:100%" rows="10" placeholder="..." >
             </textarea>
           </div>
         <div class="card" ng-repeat="attachment in submission.attachments">

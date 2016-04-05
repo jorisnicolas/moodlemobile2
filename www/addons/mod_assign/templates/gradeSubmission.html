@@ -2,26 +2,22 @@
     <ion-nav-title>{{ title }}</ion-nav-title>
     <ion-content>
 
-      <form ng-submit="saveGrade(grade.note, grade.comment)" name="itemGrade" ng-if="submission.attachments.length > 0">
+      <form ng-submit="saveGrade(grade, comment)" name="itemGrade" ng-if="submission.attachments.length > 0">
           <div class="item item-text-wrap">
             <span class="input-label">{{ 'mma.mod_assign.grade' | translate }}</span>
-            <input style="width:100%" type="text" pattern="[0-9]+([\.,][0-9]+)?" placeholder="..." ng-model="grade.note">
+            <input style="width:100%" type="text"
+                placeholder="..." pattern="[0-9]+([\.,][0-9]+)?" ng-model="grade">
           </div>
-          <div class="item item-text-wrap" ng-if="submission.attachments.length > 1 && isPluginAvailable">
+          <div class="item item-text-wrap" ng-if="isPluginAvailable">
             <span class="input-label">{{ 'mma.mod_assign.comment' | translate }}</span>
-            <textarea style="width:100%" rows="10" placeholder="..." ng-model="grade.comment"></textarea>
+            <textarea style="width:100%" rows="10"
+                placeholder="..." ng-model="comment">
+            </textarea>
           </div>
         <div class="card" ng-repeat="attachment in submission.attachments">
-            <!--<p ng-if="submission.attachments[0] == attachment">
-              <mm-format-textclass="mm-content-with-float" watch="true">{{ submission.text }}</mm-format-text>
-            </p>-->
             <div>
               <div class="item item-divider"></div>
               <mm-file file="attachment" component="{{component}}" component-id="{{submission.id}}"></mm-file>
-                <div class="item" ng-if="submission.attachments.length == 1 && isPluginAvailable">
-                  <span class="input-label">{{ 'mma.mod_assign.comment' | translate }}</span>
-                  <textarea style="width:100%" rows="10" placeholder="{{ 'mma.mod_assign.comment' | translate }}" ng-model="grade.comment"></textarea>
-                </div>
               <div class="item">
                 <div class="item-note">{{submission.status}}</div>
                 <p>{{ submission.timemodified * 1000 | mmFormatDate:"dfmediumdate" }}</p>
@@ -29,7 +25,7 @@
             </div>
         </div>
         <button type="submit" class="button button-full icon-right ion-paper-airplane button-calm"
-          ng-disabled="!grade.note.length || send || grade.note > 100"
+          ng-disabled="!grade || send || grade > 100"
           ng-click="showAlert('Grade', 'The grade\'s submission has been successfully save. Don\'t forget to synchronise with the server !')">
           {{ 'mma.mod_assign.send' | translate }}
         </button>

@@ -21,7 +21,7 @@ angular.module('mm.addons.mod_assign')
 * @ngdoc controller
 * @name mmaModAssignIndexCtrl
 */
-.controller('mmaModAssignIndexCtrl', function($scope, $stateParams, $mmaModAssign, $mmUtil, $translate,
+.controller('mmaModAssignIndexCtrl', function($scope, $mmApp, $stateParams, $mmaModAssign, mmaGradingInfo, $mmUtil, $translate,
   mmaModAssignComponent, mmaModAssignSubmissionComponent) {
 
     var module = $stateParams.module || {},
@@ -48,9 +48,19 @@ angular.module('mm.addons.mod_assign')
           if (data.canviewsubmissions) {
             // We want to show the user data on each submission.
             return $mmaModAssign.getSubmissionsUserData(data.submissions, courseid).then(function(submissions) {
-              angular.forEach(submissions, function(submission) {
-                submission.text = $mmaModAssign.getSubmissionText(submission);
-                submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);
+              $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
+                angular.forEach(submissions, function(submission) {
+                  submission.text = $mmaModAssign.getSubmissionText(submission);
+                  submission.attachments = $mmaModAssign.getSubmissionAttachments(submission);
+                  // Check if the submission is already graded
+                  submission.graded = false;
+                  grade.forEach(function(data) {
+                     if(data.userid === submission.userid && assign.id === data.assignid) {
+                       submission.graded = true;
+                       submission.gradeData = {grade : data.grade, comment : data.comment};
+                      }
+                  });
+                });
               });
               $scope.submissions = submissions;
             });

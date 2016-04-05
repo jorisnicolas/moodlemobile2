@@ -32,6 +32,12 @@ angular.module('mm.addons.grades')
         submission = sub;
       }
     });
+
+    if(submission.graded === true) {
+      $scope.grade = submission.gradeData.grade;
+      $scope.comment = submission.gradeData.comment;
+    }
+
     $scope.title = submission.userfullname;
     $scope.submission = submission;
     $scope.component = $mmaModAssign;
@@ -60,6 +66,7 @@ angular.module('mm.addons.grades')
         }
       });
       $mmaModAssign.saveGrade(id, assignid, userid, note, comment, itemid, file);
+      submission.gradeData = {grade : note, comment : comment};
       $state.go('site.mod_assign-submissionsList', {assignid: assignid, courseid: courseid, submissions: $stateParams.submissions});
     };
 

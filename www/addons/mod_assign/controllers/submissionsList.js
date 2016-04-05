@@ -34,7 +34,6 @@ angular.module('mm.addons.mod_assign')
     var sortSub = [];
     fetchSubmissions();
 
-
     function fetchSubmissions() {
       sortSub = [];
       //Disable the icon downloadAll if everything is downloaded
@@ -47,7 +46,7 @@ angular.module('mm.addons.mod_assign')
       });
       attachmentLength = 0;
       //Disable the synchronisation icon if nothing has to be synchronise
-      $mmApp.getDB().getAll('grading_info').then(function(data){
+      $mmApp.getDB().getAll(mmaGradingInfo).then(function(data){
         $scope.syncDisable = true;
         if(data.length === 0) {
           $scope.syncDisable = true;
@@ -63,15 +62,16 @@ angular.module('mm.addons.mod_assign')
       if(submissions !== null) {
         submissions.forEach(function(submission) {
            attachmentLength += submission.attachments.length;
-           // Check if the submission is already graded
-          $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
-              submission.graded = false;
-              grade.forEach(function(data) {
-                 if(data.userid === submission.userid && assignid === data.assignid) {
-                   submission.graded = true;
-                 }
-              });
-          });
+           $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
+               // Check if the submission is already graded
+               submission.graded = false;
+               grade.forEach(function(data) {
+                  if(data.userid === submission.userid && assignid === data.assignid) {
+                    submission.graded = true;
+                    submission.gradeData = {grade : data.grade, comment : data.comment};
+                   }
+               });
+             });
           //Sort by attachments
           if(submission.attachments.length > 0) {
             sortSub.unshift(submission);
@@ -87,7 +87,7 @@ angular.module('mm.addons.mod_assign')
     }
 
     $scope.refreshSubmissions = function() {
-        // Missing finally to check if the function is done
+        //TODO :: Add finally to check if the function is done
         fetchSubmissions();
         $scope.$broadcast('scroll.refreshComplete');
     };

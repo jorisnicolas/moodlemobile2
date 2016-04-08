@@ -15,5 +15,9 @@
     "downloadall": "Download All Files",
     "noSub": "No files submitted",
     "noContent": "No Submission Available",
-    "hasbeengraded": "Submission as been graded"
+    "hasbeengraded": "Submission as been graded",
+    "filesdownloadtitle": "Download All",
+    "filesdownload": "All the files have been downloaded",
+    "gradesynctitle": "Synchronisation",
+    "gradesync": "Grade and file have been uploaded successfully"
 }

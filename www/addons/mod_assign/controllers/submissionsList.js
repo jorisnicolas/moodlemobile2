@@ -22,7 +22,7 @@ angular.module('mm.addons.mod_assign')
  * @name mmaModAssignSubmissionCtrl
  */
 
-.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmFilepool, $ionicPopup, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
+.controller('mmaAssignSubmissionList', function($scope, $mmSite, $mmUtil, $mmFilepool, mmaGradingInfo, $stateParams, $ionicPlatform, $mmApp, $mmaModAssign) {
     $scope.courseid = $stateParams.courseid;
     $scope.assignid = $stateParams.assignid;
     $scope.submissions = [];
@@ -92,7 +92,7 @@ angular.module('mm.addons.mod_assign')
         $scope.$broadcast('scroll.refreshComplete');
     };
 
-    $scope.downloadAll = function(title, message) {
+    $scope.downloadAll = function() {
       var file;
       sortSub.forEach(function(sub) {
         file = $mmaModAssign.getLocalSubmissionFile(sub);
@@ -101,32 +101,25 @@ angular.module('mm.addons.mod_assign')
           $mmFilepool.addToQueueByUrl($mmSite.getId(), attachment.fileurl, {}, uKey , 0);
         });
       });
-      var alertPopup = $ionicPopup.alert({
-        title: title,
-        template: message
-      });
-      alertPopup.then(function() {
-        console.log('Success download');
-      });
+      $mmUtil.showModal('mma.mod_assign.filesdownloadtitle', 'mma.mod_assign.filesdownload');
     };
 
-    $scope.addGrade = function(title, message) {
+    $scope.addGrade = function() {
+      var count = 0;
       $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {
-            if(data.submit === false) {
+            if(data.submit === false && data.assignid === assignid) {
               data.file.forEach(function(file) {
-                  $mmaModAssign.uploadFeedback(file, data.id, assignid);
+                  $mmaModAssign.uploadFeedback(file, data.id, assignid, function() {
+                    count++;
+                    if(count === data.file.length) {
+                      $mmUtil.showModal('mma.mod_assign.gradesynctitle', 'mma.mod_assign.gradesync');
+                      // $mmUtil.showErrorModal("Upload failed, check your connection");
+                    }
+                  });
               });
             }
           });
       });
-      var alertPopup = $ionicPopup.alert({
-        title: title,
-        template: message
-      });
-      alertPopup.then(function() {
-        console.log('Success upload and grade');
-      });
     };
-
 });

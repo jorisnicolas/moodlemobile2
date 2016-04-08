@@ -188,7 +188,7 @@ angular.module('mm.core')
         ftOptions.fileName = options.fileName;
         ftOptions.httpMethod = 'POST';
         ftOptions.mimeType = options.mimeType;
-	if(typeof(options.filearea) !== 'undefined') {
+	      if(typeof(options.filearea) !== 'undefined') {
           filearea = options.filearea;
         }
         ftOptions.params = {

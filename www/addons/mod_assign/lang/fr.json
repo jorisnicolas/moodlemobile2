@@ -8,6 +8,7 @@
     "submissions": "Devoirs",
     "userwithid": "Utilisateur d'Id {{id}}",
     "viewsubmission": "Afficher devoir",
+
     "noContent": "Aucun devoirs",
     "grade": "Note",
     "comment": "Commentaire",
@@ -15,5 +16,9 @@
     "sync": "Tout synchroniser",
     "downloadall": "Tout télécharger",
     "noSub": "Aucun fichier rendu",
-    "hasbeengraded": "La note a été enregistrée"
+    "hasbeengraded": "La note a été enregistrée",
+    "filesdownloadtitle": "Tout télécharger",
+    "filesdownload": "Tout les fichiers ont été téléchargés",
+    "gradesynctitle": "Synchronisation",
+    "gradesync": "Synchronisation des notes et fichier reussi"
 }

@@ -260,7 +260,7 @@ angular.module('mm.addons.mod_assign')
       var localFiles = [];
       if (submission.plugins) {
         submission.plugins.forEach(function(plugin) {
-          if (plugin.type == 'file' && plugin.fileareas[0].files) {
+          if ((plugin.type == 'file' && plugin.fileareas[0].files) || (plugin.type == 'filetypes')) {
             files = plugin.fileareas[0].files;
           }
         });
@@ -292,7 +292,7 @@ angular.module('mm.addons.mod_assign')
      * @param {Int} assign        The assignement id
      * @return {Promise}
      */
-    self.uploadFeedback = function(fileInfo, id, assign) {
+    self.uploadFeedback = function(fileInfo, id, assign, callback) {
 
       var options = [];
       var presets = [];
@@ -323,6 +323,7 @@ angular.module('mm.addons.mod_assign')
                     str_itemid = parseInt(str_itemid.split('itemid":')[1].split(',')[0]);
                     // get the local database with the grade info
                     $mmApp.getDB().get('grading_info', id).then(function(gradingInfo) {
+                      console.log(gradingInfo);
                       // update the local database to add a fonctionnal itemId
                       $mmApp.getDB().update('grading_info', {itemid: str_itemid, submit: true}, parseInt(gradingInfo.id) === parseInt(id)).then(function() {
                         // get the local database updated
@@ -346,10 +347,12 @@ angular.module('mm.addons.mod_assign')
                                 }
                               }]
                           };
+                          console.log(data);
                           $mmSite.write('mod_assign_save_grades', data);
                         });
                       });
                     });
+                    callback();
                 });
               });
             }

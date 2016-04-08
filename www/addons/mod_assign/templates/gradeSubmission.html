@@ -16,7 +16,7 @@
         <div class="card" ng-repeat="attachment in submission.attachments">
             <div>
               <div class="item item-divider"></div>
-              <mm-file file="attachment" component="{{component}}" component-id="{{submission.id}}"></mm-file>
+              <mm-gradefile file="attachment" component="{{component}}" component-id="{{submission.id}}"></mm-gradefile>
               <div class="item">
                 <div class="item-note">{{submission.status}}</div>
                 <p>{{ submission.timemodified * 1000 | mmFormatDate:"dfmediumdate" }}</p>

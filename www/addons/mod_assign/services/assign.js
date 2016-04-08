@@ -348,24 +348,6 @@ angular.module('mm.addons.mod_assign')
                               }]
                           };
 
-                          var saveGradeData = {
-                            assignmentid: assign,
-                            userid: gradeUpdated.userid,
-                            grade: gradeUpdated.grade,
-                            attemptnumber: -1,
-                            addattempt: 0,
-                            workflowstate: "",
-                            applytoall: 0,
-                            plugindata: {
-                              assignfeedbackcomments_editor: {
-                                text:  gradeUpdated.comment,
-                                format: 4
-                              },
-                              files_filemanager: gradeUpdated.itemid
-                            }
-                          };
-
-                          $mmSite.write('mod_assign_save_grade', saveGradeData);
                           $mmSite.write('mod_assign_save_grades', saveGradesData);
                         });
                       });

@@ -66,7 +66,6 @@ angular.module('mm.addons.grades')
           itemid = data.itemid;
         }
       });
-      console.log(grade, comment);
       $mmaModAssign.saveGrade(id, assignid, userid, grade, comment, itemid, file);
       submission.gradeData = {grade : grade, comment : comment};
       $state.go('site.mod_assign-submissionsList', {assignid: assignid, courseid: courseid, submissions: $stateParams.submissions});

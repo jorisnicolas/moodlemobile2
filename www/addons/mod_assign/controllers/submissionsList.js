@@ -113,6 +113,7 @@ angular.module('mm.addons.mod_assign')
                   $mmaModAssign.uploadFeedback(file, data.id, assignid, function() {
                     count++;
                     if(count === data.file.length) {
+                      // check only the last one for success :/
                       $mmUtil.showModal('mma.mod_assign.gradesynctitle', 'mma.mod_assign.gradesync');
                       // $mmUtil.showErrorModal("Upload failed, check your connection");
                     }

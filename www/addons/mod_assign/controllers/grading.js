@@ -21,7 +21,7 @@ angular.module('mm.addons.grades')
  * @ngdoc controller
  * @name mmaModAssignSubmissionCtrl
  */
-.controller('mmaAssignGradingCtrl', function($scope, $state, $stateParams, $mmaModAssign, $ionicPopup, $mmApp) {
+.controller('mmaAssignGradingCtrl', function($scope, $state, $stateParams, $mmaModAssign, $mmUtil, $mmApp) {
 
     var userid = $stateParams.userid;
     var assignid = $stateParams.assignid;
@@ -61,7 +61,6 @@ angular.module('mm.addons.grades')
       var id = courseid + "" + userid + "" + assignid + "" + submission.id;
       var gradingInfo = $mmApp.getDB().get('grading_info', id);
       var file = $mmaModAssign.getLocalSubmissionFile(submission);
-      console.log(file);
       gradingInfo.then(function(data) {
         if(data.itemid <= 0) {
           itemid = data.itemid;
@@ -71,15 +70,7 @@ angular.module('mm.addons.grades')
       $mmaModAssign.saveGrade(id, assignid, userid, grade, comment, itemid, file);
       submission.gradeData = {grade : grade, comment : comment};
       $state.go('site.mod_assign-submissionsList', {assignid: assignid, courseid: courseid, submissions: $stateParams.submissions});
+      $mmUtil.showModal('mma.mod_assign.savegradetitle', 'mma.mod_assign.savegrade');
     };
 
-    $scope.showAlert = function(title, message) {
-      var alertPopup = $ionicPopup.alert({
-        title: title,
-        template: message
-      });
-      alertPopup.then(function() {
-        console.log('Success');
-      });
-    };
 });

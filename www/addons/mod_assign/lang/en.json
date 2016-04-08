@@ -19,5 +19,7 @@
     "filesdownloadtitle": "Download All",
     "filesdownload": "All the files have been downloaded",
     "gradesynctitle": "Synchronisation",
-    "gradesync": "Grade and file have been uploaded successfully"
+    "gradesync": "Grade and file have been uploaded successfully",
+    "savegrade": "The grade's submmission has been successfully save. Don't forget to synchronise with the server",
+    "savegradetitle": "Grade save"
 }

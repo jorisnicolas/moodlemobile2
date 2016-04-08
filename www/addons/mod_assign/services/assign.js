@@ -260,7 +260,7 @@ angular.module('mm.addons.mod_assign')
       var localFiles = [];
       if (submission.plugins) {
         submission.plugins.forEach(function(plugin) {
-          if ((plugin.type == 'file' && plugin.fileareas[0].files) || (plugin.type == 'filetypes')) {
+          if ((plugin.type.substr(0,4) === 'file' && plugin.fileareas[0].files)) {
             files = plugin.fileareas[0].files;
           }
         });
@@ -287,9 +287,10 @@ angular.module('mm.addons.mod_assign')
      * @module mm.addons.grades
      * @ngdoc method
      * @name $mmaGrades#uploadFiles
-     * @param {Object} file       The file to upload
-     * @param {Int} id            The uniqueId
-     * @param {Int} assign        The assignement id
+     * @param {Object} file           The file to upload
+     * @param {Int} id                The uniqueId
+     * @param {Int} assign            The assignement id
+     * @param {Function} callback     Function called for the modal
      * @return {Promise}
      */
     self.uploadFeedback = function(fileInfo, id, assign, callback) {
@@ -307,7 +308,7 @@ angular.module('mm.addons.mod_assign')
       presets.token = $mmSite.getToken();
       presets.siteurl = $mmSite.getURL();
 
-      // get downloaded files
+      // get downloaded files from the filepool area
       $mmSite.getDb().getAll('filepool').then(function(filepool) {
           filepool.forEach(function(file) {
             // get the relative file that we want to work on
@@ -323,13 +324,12 @@ angular.module('mm.addons.mod_assign')
                     str_itemid = parseInt(str_itemid.split('itemid":')[1].split(',')[0]);
                     // get the local database with the grade info
                     $mmApp.getDB().get('grading_info', id).then(function(gradingInfo) {
-                      console.log(gradingInfo);
                       // update the local database to add a fonctionnal itemId
                       $mmApp.getDB().update('grading_info', {itemid: str_itemid, submit: true}, parseInt(gradingInfo.id) === parseInt(id)).then(function() {
                         // get the local database updated
                         $mmApp.getDB().get('grading_info', id).then(function(gradeUpdated) {
                           // build the object 'data' with the local database
-                          var data = {
+                          var saveGradesData = {
                             assignmentid: assign,
                             applytoall: 0,
                             grades: [{
@@ -347,8 +347,26 @@ angular.module('mm.addons.mod_assign')
                                 }
                               }]
                           };
-                          console.log(data);
-                          $mmSite.write('mod_assign_save_grades', data);
+
+                          var saveGradeData = {
+                            assignmentid: assign,
+                            userid: gradeUpdated.userid,
+                            grade: gradeUpdated.grade,
+                            attemptnumber: -1,
+                            addattempt: 0,
+                            workflowstate: "",
+                            applytoall: 0,
+                            plugindata: {
+                              assignfeedbackcomments_editor: {
+                                text:  gradeUpdated.comment,
+                                format: 4
+                              },
+                              files_filemanager: gradeUpdated.itemid
+                            }
+                          };
+
+                          $mmSite.write('mod_assign_save_grade', saveGradeData);
+                          $mmSite.write('mod_assign_save_grades', saveGradesData);
                         });
                       });
                     });

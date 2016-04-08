@@ -20,5 +20,7 @@
     "filesdownloadtitle": "Tout télécharger",
     "filesdownload": "Tout les fichiers ont été téléchargés",
     "gradesynctitle": "Synchronisation",
-    "gradesync": "Synchronisation des notes et fichier reussi"
+    "gradesync": "Synchronisation des notes et fichier reussi",
+    "savegrade": "La note a été sauvergardée, n'oubliez pas de synchroniser avec le serveur",
+    "savegradetitle": "Note sauvegardée"
 }

@@ -35,6 +35,7 @@ angular.module('mm.addons.mod_assign', ['mm.core'])
             }
         }
     })
+
     .state('site.mod_assign-submission', {
         url: '/mod_assign-submission',
         params: {

@@ -192,7 +192,6 @@ angular.module('mm.core')
                               // add the basepath and the local url and then open it
                               // (openFile's function need the basePath to open the file)
                               isOriginalsFilesExist(scope, fileurl);
-                              console.log(scope.isOriginalDownloaded);
                               $mmUtil.openFile(basePath + localUrl).catch(function(error) {
                                   $mmUtil.showErrorModal(error);
                               });

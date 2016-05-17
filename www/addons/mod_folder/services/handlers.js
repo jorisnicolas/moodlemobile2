@@ -92,8 +92,9 @@ angular.module('mm.addons.mod_folder')
 
                 $scope.icon = $mmCourse.getModuleIconSrc('folder');
                 $scope.title = module.name;
+                $scope.class = 'mma-mod_folder-handler';
                 $scope.buttons = [downloadBtn, refreshBtn];
-                $scope.spinner = false;
+                $scope.spinner = true; // Show spinner while calculating status.
 
                 $scope.action = function(e) {
                     if (e) {

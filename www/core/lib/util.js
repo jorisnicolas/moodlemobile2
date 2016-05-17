@@ -66,7 +66,7 @@ angular.module('mm.core')
     };
 
     this.$get = function($ionicLoading, $ionicPopup, $injector, $translate, $http, $log, $q, $mmLang, $mmFS, $timeout, $mmApp,
-                $mmText, mmCoreWifiDownloadThreshold, mmCoreDownloadThreshold) {
+                $mmText, mmCoreWifiDownloadThreshold, mmCoreDownloadThreshold, $ionicScrollDelegate) {
 
         $log = $log.getInstance('$mmUtil');
 
@@ -391,7 +391,17 @@ angular.module('mm.core')
          * @return {Void}
          */
         self.openInApp = function(url) {
-            window.open(url, '_blank');
+            if (!url) {
+                return;
+            }
+
+            var options = 'enableViewPortScale=yes'; // Enable zoom on iOS.
+            if (ionic.Platform.isIOS() && url.indexOf('file://') === 0) {
+                // The URL uses file protocol, don't show it on iOS.
+                // In Android we keep it because otherwise we lose the whole toolbar.
+                options += ',location=no';
+            }
+            window.open(url, '_blank', options);
         };
 
         /**
@@ -983,6 +993,75 @@ angular.module('mm.core')
             });
 
             return div.html();
+        };
+
+        /**
+         * Scroll to a certain element inside another element.
+         * This is done this way because using anchorScroll or $location.hash sticks the scroll to go upwards.
+         *
+         * @module mm.core
+         * @ngdoc method
+         * @name $mmUtil#scrollToElement
+         * @param  {Object} container           Element to search in.
+         * @param  {String} [selector]          Selector to find the element to scroll to. If not defined, scroll to the container.
+         * @param  {Object} [scrollDelegate]    Scroll delegate. If not defined, use $ionicScrollDelegate.
+         * @param  {String} [scrollParentClass] Scroll Parent Class where to stop calculating the position. Default scroll-content.
+         * @return {Boolean}                    True if the element is found, false otherwise.
+         */
+        self.scrollToElement = function(container, selector, scrollDelegate, scrollParentClass) {
+            if (!scrollDelegate) {
+                scrollDelegate = $ionicScrollDelegate;
+            }
+
+            if (!scrollParentClass) {
+                scrollParentClass = 'scroll-content';
+            }
+
+            var element = selector ? container.querySelector(selector) : container,
+                positionTop = positionLeft = 0;
+
+            if (!element) {
+                return false;
+            }
+
+            while (element) {
+                positionLeft += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+                positionTop += (element.offsetTop - element.scrollTop + element.clientTop);
+
+                element = element.offsetParent;
+                // If scrolling element is reached, stop adding tops.
+                if (angular.element(element).hasClass(scrollParentClass)) {
+                    element = false;
+                }
+            }
+
+            scrollDelegate.scrollTo(positionLeft, positionTop);
+            return true;
+        };
+
+        /**
+         * Search all the URLs in a CSS file content.
+         *
+         * @module mm.core
+         * @ngdoc method
+         * @name $mmUtil#extractUrlsFromCSS
+         * @param  {String} code CSS code.
+         * @return {String[]}    List of URLs.
+         */
+        self.extractUrlsFromCSS = function(code) {
+            // First of all, search all the url(...) occurrences that don't include "data:".
+            var urls = [],
+                matches = code.match(/url\(\s*["']?(?!data:)([^)]+)\)/igm);
+
+            // Extract the URL form each match.
+            angular.forEach(matches, function(match) {
+                var submatches = match.match(/url\(\s*['"]?([^'"]*)['"]?\s*\)/im);
+                if (submatches && submatches[1]) {
+                    urls.push(submatches[1]);
+                }
+            });
+
+            return urls;
         };
 
         return self;

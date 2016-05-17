@@ -92,8 +92,9 @@ angular.module('mm.addons.mod_imscp')
 
                 $scope.title = module.name;
                 $scope.icon = $mmCourse.getModuleIconSrc('imscp');
+                $scope.class = 'mma-mod_imscp-handler';
                 $scope.buttons = [downloadBtn, refreshBtn];
-                $scope.spinner = false;
+                $scope.spinner = true; // Show spinner while calculating status.
 
                 $scope.action = function(e) {
                     if (e) {

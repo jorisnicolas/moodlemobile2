@@ -1,6 +1,12 @@
 This files describes API changes in the Moodle Mobile app,
 information provided here is intended especially for developers.
 
+=== 3.0 ===
+
+ * The function $mmaModBook#getChapterContent now requires to receive the result of $mmaModBook#getContentsMap instead of module.contents.
+ * The events obtained using $mmaMessages#getDiscussionEventName are deprecated. Now you should just use the event mmaMessagesNewMessageEvent and you will receive the site ID and user ID as parameters.
+ * Directive "mm-browser" has been renamed to "mm-link" to be more coherent with its functionality.
+
 === 2.9 ===
 
  * Most of the functions from $mmaModScormOnline, $mmaModScormOffline, $mmaModScorm, $mmaModScormSync and $mmaModScormHelper now have a new param siteId to determine the site to affect. If you use any of these services please make sure you still pass the right parameters.

@@ -81,8 +81,8 @@ angular.module('mm.addons.mod_assign')
         if (refresh) {
             preSets.getFromCache = false;
         }
-
         return $mmSite.read('mod_assign_get_assignments', params, preSets).then(function(response) {
+          console.log(response);
             if (response.courses && response.courses.length) {
                 var assignments = response.courses[0].assignments;
                 for (var i = 0; i < assignments.length; i++) {

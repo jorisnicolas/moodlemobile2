@@ -20,6 +20,6 @@
     "filesdownload": "All the files have been downloaded",
     "gradesynctitle": "Synchronisation",
     "gradesync": "Grade and file have been uploaded successfully",
-    "savegrade": "The grade's submmission has been successfully save. Don't forget to synchronise with the server",
+    "savegrade": "The grade's submmission has been successfully save. Don't forget to synchronise with the Moodle server",
     "savegradetitle": "Grade save"
 }

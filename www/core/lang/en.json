@@ -121,5 +121,7 @@
     "wsfunctionnotavailable": "The webservice function is not available.",
     "year" : "year",
     "years": "years",
-    "yes": "Yes"
+    "yes": "Yes",
+    "confirmReplace": "You're about to delete the corrected version of the file and replace it with the original one",
+    "confirmReplaceTitle": "Replace corrected file ?"
 }

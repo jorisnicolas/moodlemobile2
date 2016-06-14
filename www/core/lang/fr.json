@@ -375,5 +375,7 @@
     "wsfunctionnotavailable": "La fonction webservice n'est pas disponible",
     "year": "année",
     "years": "années",
-    "yes": "Oui"
+    "yes": "Oui",
+    "confirmReplace": "Vous êtes sur le point de remplacer la copie corrigée par la copie originale, toutes modifications sera perdue !",
+    "confirmReplaceTitle": "Remplacer la copie ?"
 }

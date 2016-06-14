@@ -32,18 +32,10 @@ angular.module('mm.addons.mod_assign')
         assignid    = $stateParams.assignid;
     var attachmentLength = 0;
     var sortSub = [];
-    fetchSubmissions();
+    fetchSubmissions(false);
 
-    function fetchSubmissions() {
+    function fetchSubmissions(refresh) {
       sortSub = [];
-      //Disable the icon downloadAll if everything is downloaded
-      $mmSite.getDb().getAll('filepool').then(function(data){
-          if(data.length === attachmentLength || attachmentLength === 0){
-              $scope.dlDisable = true;
-          }else{
-              $scope.dlDisable = false;
-          }
-      });
       attachmentLength = 0;
       //Disable the synchronisation icon if nothing has to be synchronise
       $mmApp.getDB().getAll(mmaGradingInfo).then(function(data){
@@ -62,6 +54,12 @@ angular.module('mm.addons.mod_assign')
       if(submissions !== null) {
         submissions.forEach(function(submission) {
            attachmentLength += submission.attachments.length;
+           if(refresh === false) {
+             submission.attachments.forEach(function(attachment, key) {
+               uKey = submission.id + "" + key;
+               $mmFilepool.addToQueueByUrl($mmSite.getId(), attachment.fileurl, {}, uKey , 0);
+             });
+           }
            $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
                // Check if the submission is already graded
                submission.graded = false;
@@ -84,27 +82,23 @@ angular.module('mm.addons.mod_assign')
         $scope.noSubmission = true;
       }
       $scope.submissionsLoaded = true;
+
     }
 
     $scope.refreshSubmissions = function() {
         //TODO :: Add finally to check if the function is done
-        fetchSubmissions();
+        fetchSubmissions(true);
         $scope.$broadcast('scroll.refreshComplete');
     };
 
-    $scope.downloadAll = function() {
-      var file;
-      sortSub.forEach(function(sub) {
-        file = $mmaModAssign.getLocalSubmissionFile(sub);
-        file.forEach(function(attachment, key) {
+    function downloadAll(sub) {
+        sub.attachments.forEach(function(attachment, key) {
           uKey = sub.id + "" + key;
           $mmFilepool.addToQueueByUrl($mmSite.getId(), attachment.fileurl, {}, uKey , 0);
         });
-      });
-      $mmUtil.showModal('mma.mod_assign.filesdownloadtitle', 'mma.mod_assign.filesdownload');
-    };
+    }
 
-    $scope.addGrade = function() {
+    $scope.sync = function() {
       var count = 0;
       $mmApp.getDB().getAll(mmaGradingInfo).then(function(grade) {
           grade.forEach(function(data) {

@@ -86,23 +86,6 @@ angular.module('mm.core')
         });
     }
 
-    function isOriginalsFilesExist(scope, fileurl) {
-      $mmFilepool.getFilePathByUrl($mmSite.getId(), fileurl).then(function(path) {
-        // split the path
-        splitedPath = path.split("filepool");
-        // replace the filepool dir by originals
-        originalPath = path.replace("filepool", "originals");
-        // get the directory contents of the originals dir
-        $mmFS.getDirectoryContents(splitedPath[0] + "originals").then(function(files) {
-          scope.isOriginalDownloaded = false;
-          files.forEach(function(file) {
-            if(file.fullPath.includes(originalPath))  {
-              scope.isOriginalDownloaded = true;
-            }
-          });
-        });
-      });
-    }
 
     return {
         restrict: 'E',
@@ -123,7 +106,6 @@ angular.module('mm.core')
             scope.filename = filename;
             scope.fileicon = $mmFS.getFileIcon(filename);
             getState(scope, siteid, fileurl, timemodified);
-            isOriginalsFilesExist(scope, fileurl);
 
             $mmFilepool.getFileEventNameByUrl(siteid, fileurl).then(function(eventName) {
                 observer = $mmEvents.on(eventName, function(data) {
@@ -167,65 +149,50 @@ angular.module('mm.core')
                 }
             };
 
-            scope.downloadOriginals = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                // Don't wan't to modify the lang files for this one
-                $mmUtil.showConfirm("This is the original file, any modification won't be save", "Original File").then(function() {
-                  if (scope.isDownloading) {
-                      return;
-                  }
-                  return $mmFilepool.downloadUrl(siteid, fileurl, true, component, componentid, timemodified).then(function(localUrl) {
-                      // fixe the url
-                      $mmFilepool._fixPluginfileURL($mmSite.getId(), fileurl).then(function(fixedUrl) {
-                          // get basePath
-                          $mmFS.getBasePath().then(function(basePath) {
-                            // remove basePath from the localUrl
-                            // (because of downloadFile)
-                            localUrlWithoutBasePath = localUrl.split(basePath)[1];
-                            // reconstruct the localUrl by changing the saved dir (filepool) by another (original)
-                            localUrl = localUrlWithoutBasePath.replace('filepool', 'originals');
-                            // download the file
-                            // (downloadFile's function doesn't work if the localUrl has the basePath)
-                            return $mmWS.downloadFile(fixedUrl, localUrl).then(function() {
-                              // add the basepath and the local url and then open it
-                              // (openFile's function need the basePath to open the file)
-                              isOriginalsFilesExist(scope, fileurl);
-                              $mmUtil.openFile(basePath + localUrl).catch(function(error) {
-                                  $mmUtil.showErrorModal(error);
-                              });
-                            });
-                          });
-                      });
-                  });
-                });
-            };
-
             scope.setOriginal = function(e) {
               e.preventDefault();
               e.stopPropagation();
               var originalPath;
               var splitedPath;
-              $mmUtil.showConfirm("You're about to delete the corrected version of the file and replace it with the original one", "Replace corrected file ?").then(function() {
-                $mmFilepool.getFilePathByUrl($mmSite.getId(), fileurl).then(function(path) {
-                  // split the path
-                  splitedPath = path.split("filepool");
-                  // replace the filepool dir by originals
-                  originalPath = path.replace("filepool", "originals");
-                  // get the directory contents of the originals dir
-                  $mmFS.getDirectoryContents(splitedPath[0] + "originals").then(function(files) {
-                    files.forEach(function(file) {
-                      if(file.fullPath.includes(originalPath))  {
-                        // remove the file in the filepool dir
-                        $mmFS.removeFile(path).then(function() {
-                          // move the original's file to the filepool area
-                          $mmFS.moveFile(file.fullPath, path);
+
+              return $mmFilepool.downloadUrl(siteid, fileurl, true, component, componentid, timemodified).then(function(localUrl) {
+                  // fixe the url
+                  $mmFilepool._fixPluginfileURL($mmSite.getId(), fileurl).then(function(fixedUrl) {
+                      // get basePath
+                      $mmFS.getBasePath().then(function(basePath) {
+                        // remove basePath from the localUrl
+                        // (because of downloadFile)
+                        localUrlWithoutBasePath = localUrl.split(basePath)[1];
+                        // reconstruct the localUrl by changing the saved dir (filepool) by another (original)
+                        localUrl = localUrlWithoutBasePath.replace('filepool', 'originals');
+                        // download the file
+                        // (downloadFile's function doesn't work if the localUrl has the basePath)
+                        return $mmWS.downloadFile(fixedUrl, localUrl).then(function() {
+                          // add the basepath and the local url and then open it
+                          // (openFile's function need the basePath to open the file)
+                          $mmUtil.showConfirm('mm.core.confirmReplace', 'mm.core.confirmReplaceTitle').then(function() {
+                            $mmFilepool.getFilePathByUrl($mmSite.getId(), fileurl).then(function(path) {
+                              // split the path
+                              splitedPath = path.split("filepool");
+                              // replace the filepool dir by originals
+                              originalPath = path.replace("filepool", "originals");
+                              // get the directory contents of the originals dir
+                              $mmFS.getDirectoryContents(splitedPath[0] + "originals").then(function(files) {
+                                files.forEach(function(file) {
+                                  if(file.fullPath.includes(originalPath))  {
+                                    // remove the file in the filepool dir
+                                    $mmFS.removeFile(path).then(function() {
+                                      // move the original's file to the filepool area
+                                      $mmFS.moveFile(file.fullPath, path);
+                                    });
+                                  }
+                                });
+                              });
+                            });
+                          });
                         });
-                      }
-                    });
+                      });
                   });
-                });
               });
             };
 
